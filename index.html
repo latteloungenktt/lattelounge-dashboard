@@ -3,215 +3,171 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Latte Lounge — Dashboard Ventes</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Latte Lounge — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 :root{
   --bg:#0D1117; --surface:#161B22; --surface2:#21262D;
   --border:#30363D; --navy:#1B2A4A;
-  --gold:#C9A84C; --gold2:#F0D080; --gold3:rgba(201,168,76,.12);
-  --green:#3DAA6E; --green2:#2ecc71; --red:#E74C3C;
-  --blue:#3A7BD5; --muted:#8B949E; --text:#E6EDF3;
-  --col-w:120px;
+  --gold:#C9A84C; --gold2:#F0D080;
+  --green:#3DAA6E; --green2:#2ecc71;
+  --blue:#3A7BD5; --blue2:#64B5F6;
+  --red:#E74C3C; --muted:#8B949E; --text:#E6EDF3;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Jost',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body{font-family:'Jost',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
 /* ── HEADER ── */
-header{background:linear-gradient(135deg,#0a0e13 0%,#1a2535 100%);border-bottom:1px solid var(--gold);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
-.logo{display:flex;flex-direction:column;}
-.logo-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--gold);letter-spacing:3px;text-transform:uppercase;}
-.logo-sub{font-size:10px;color:var(--muted);letter-spacing:4px;text-transform:uppercase;margin-top:2px;}
-.header-right{display:flex;align-items:center;gap:12px;}
-.badge-live{display:flex;align-items:center;gap:6px;background:rgba(61,170,110,.15);border:1px solid var(--green);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--green);font-weight:600;}
-.dot-live{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
-.btn-refresh{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:6px 14px;cursor:pointer;transition:all .2s;font-family:'Jost',sans-serif;}
-.btn-refresh:hover{border-color:var(--gold);color:var(--gold);}
-#lastUpdate{font-size:10px;color:var(--muted);letter-spacing:.5px;}
+header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px solid var(--gold);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--gold);letter-spacing:3px;text-transform:uppercase;}
+.logo-sub{font-size:10px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:2px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.badge-live{display:flex;align-items:center;gap:5px;background:rgba(61,170,110,.15);border:1px solid var(--green);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--green);font-weight:600;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.btn-sm{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:11px;padding:5px 12px;cursor:pointer;font-family:'Jost',sans-serif;transition:all .2s;}
+.btn-sm:hover{border-color:var(--gold);color:var(--gold);}
+.btn-gold{background:var(--gold);border:none;border-radius:8px;color:#0a0e13;font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer;font-family:'Jost',sans-serif;transition:all .2s;}
+.btn-gold:hover{filter:brightness(1.1);}
+#lastUpdate{font-size:10px;color:var(--muted);}
 
-/* ── KPI STRIP ── */
-.kpi-strip{display:flex;gap:12px;padding:20px 28px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
-.kpi-strip::-webkit-scrollbar{display:none;}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 20px;min-width:160px;flex-shrink:0;position:relative;overflow:hidden;}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.kpi.gold::before{background:linear-gradient(90deg,var(--gold),var(--gold2));}
-.kpi.green::before{background:linear-gradient(90deg,var(--green),var(--green2));}
-.kpi.blue::before{background:linear-gradient(90deg,var(--blue),#64B5F6);}
-.kpi.red::before{background:linear-gradient(90deg,var(--red),#FF6B6B);}
-.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;}
-.kpi-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--text);}
-.kpi-val.gold{color:var(--gold);}
-.kpi-val.green{color:var(--green2);}
-.kpi-sub{font-size:11px;color:var(--muted);margin-top:3px;}
-
-/* ── MAIN LAYOUT ── */
-.main{display:grid;grid-template-columns:1fr;gap:0;}
+/* ── CONTENT ── */
+.content{padding:20px 24px;max-width:1200px;margin:0 auto;}
 
 /* ── SECTION TITLE ── */
-.section-title{display:flex;align-items:center;justify-content:space-between;padding:20px 28px 12px;}
-.section-title h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);font-weight:700;}
-.section-title .sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.section-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
 
-/* ── TABLE WRAPPER ── */
-.table-outer{overflow-x:auto;padding:0 28px 28px;}
-.table-outer::-webkit-scrollbar{height:6px;}
-.table-outer::-webkit-scrollbar-track{background:var(--surface);}
-.table-outer::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;}
+.kpi.total::before{background:linear-gradient(90deg,var(--gold),var(--gold2));}
+.kpi.bankily::before{background:linear-gradient(90deg,var(--green),var(--green2));}
+.kpi.cash::before{background:linear-gradient(90deg,var(--blue),var(--blue2));}
+.kpi.cmds::before{background:linear-gradient(90deg,#9B59B6,#D7BDE2);}
+.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+.kpi-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1;}
+.kpi-val.total{color:var(--gold);}
+.kpi-val.bankily{color:var(--green2);}
+.kpi-val.cash{color:var(--blue2);}
+.kpi-val.cmds{color:#D7BDE2;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+.kpi-unit{font-size:14px;font-weight:400;opacity:.7;}
 
-table.sales-table{border-collapse:separate;border-spacing:0;min-width:100%;white-space:nowrap;}
-/* Sticky product col */
-.sales-table th.sticky, .sales-table td.sticky{
-  position:sticky;left:0;z-index:2;
-  background:var(--surface);
-  border-right:1px solid var(--border);
-  min-width:180px;max-width:220px;
-}
-.sales-table thead th{
-  background:var(--surface2);color:var(--muted);
-  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;
-  padding:10px 16px;border-bottom:1px solid var(--border);
-  border-right:1px solid var(--border);
-}
-.sales-table thead th.day-col{
-  text-align:center;min-width:var(--col-w);
-}
-.sales-table thead th.day-col.today{
-  color:var(--gold);background:var(--gold3);
-}
-.day-name{display:block;font-size:12px;font-weight:700;margin-bottom:2px;}
-.day-date{display:block;font-size:10px;opacity:.7;}
-.sales-table tbody tr{transition:background .15s;}
-.sales-table tbody tr:hover td{background:rgba(201,168,76,.06);}
-.sales-table tbody tr:hover td.sticky{background:var(--surface2);}
-.sales-table td{
-  padding:9px 14px;font-size:13px;
-  border-bottom:1px solid var(--border);
-  border-right:1px solid var(--border);
-}
-.sales-table td.sticky{font-weight:500;color:var(--text);}
-.sales-table td.num{
-  text-align:center;font-family:'DM Mono',monospace;font-size:12px;
-  color:var(--muted);position:relative;
-}
-.sales-table td.num.has-val{color:var(--text);}
-.sales-table td.num .bar{
-  position:absolute;bottom:0;left:4px;right:4px;height:3px;
-  background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:2px;opacity:.7;
-}
-.sales-table td.num.today-col{background:var(--gold3);}
-/* Category header row */
-.cat-row td{
-  background:var(--surface2);color:var(--gold);
-  font-size:11px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;padding:6px 14px;
-}
-.cat-row td.sticky{background:var(--surface2);}
-/* Total row */
-.total-row td{
-  background:var(--surface2);font-weight:700;
-  font-family:'DM Mono',monospace;font-size:12px;
-  border-top:2px solid var(--gold);
-}
-.total-row td.sticky{color:var(--gold);font-size:13px;font-family:'Jost',sans-serif;}
+/* ── 7 DAYS GRID ── */
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:28px;}
+.day-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;transition:transform .2s;}
+.day-card:hover{transform:translateY(-2px);}
+.day-card.today{border-color:var(--gold);background:linear-gradient(135deg,var(--surface),rgba(201,168,76,.06));}
+.day-card.today::before{content:'⭐';position:absolute;top:8px;right:10px;font-size:12px;}
+.day-header{text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.day-name{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.day-date{font-size:13px;color:var(--text);font-weight:600;margin-top:2px;}
+.day-total{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--gold);text-align:center;}
+.day-total-label{font-size:9px;color:var(--muted);text-align:center;text-transform:uppercase;letter-spacing:1px;margin-top:-4px;}
+.day-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;}
+.day-row-label{color:var(--muted);display:flex;align-items:center;gap:4px;}
+.day-row-val{font-family:'DM Mono',monospace;font-weight:600;}
+.day-row-val.bankily{color:var(--green2);}
+.day-row-val.cash{color:var(--blue2);}
+.day-row-val.cmds{color:#D7BDE2;}
 
-/* ── BOTTOM PANELS ── */
-.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 28px 28px;}
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-.panel-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
-.panel-header h3{font-family:'Playfair Display',serif;font-size:15px;color:var(--text);font-weight:700;}
-.panel-body{padding:14px 18px;max-height:320px;overflow-y:auto;}
-.panel-body::-webkit-scrollbar{width:4px;}
-.panel-body::-webkit-scrollbar-thumb{background:var(--border);}
+/* Bar chart inside card */
+.day-bars{display:flex;gap:3px;align-items:flex-end;height:40px;margin-top:4px;}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s ease;}
+.bar.bankily{background:var(--green);}
+.bar.cash{background:var(--blue);}
+.bar-label{font-size:8px;color:var(--muted);text-transform:uppercase;}
 
-/* Top products */
-.prod-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
-.prod-row:last-child{border-bottom:none;}
-.prod-rank{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);width:24px;text-align:right;flex-shrink:0;}
-.prod-name{flex:1;font-size:13px;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.prod-bar-wrap{width:80px;height:6px;background:var(--border);border-radius:3px;flex-shrink:0;}
-.prod-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy),var(--gold));}
-.prod-qty{font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);width:40px;text-align:right;flex-shrink:0;}
-.prod-ca{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);width:60px;text-align:right;flex-shrink:0;}
-.medal{font-size:16px;width:22px;flex-shrink:0;}
+/* Empty day */
+.day-empty{text-align:center;color:var(--muted);font-size:11px;padding:10px 0;}
 
-/* Dead products */
-.dead-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
-.dead-row:last-child{border-bottom:none;}
-.dead-name{color:var(--muted);}
-.dead-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
-.dead-badge.never{background:rgba(231,76,60,.15);color:var(--red);border:1px solid rgba(231,76,60,.3);}
-.dead-badge.rare{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.2);}
+/* ── RAPPORT BUTTONS ── */
+.rapport-section{display:flex;gap:12px;margin-bottom:28px;}
+.btn-rapport{flex:1;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Jost',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-rapport:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── RAPPORT MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-header h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);}
+.modal-body{padding:20px;}
+.rapport-table{width:100%;border-collapse:collapse;font-size:12px;}
+.rapport-table th{background:var(--surface2);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.rapport-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;}
+.rapport-table tr:hover td{background:rgba(201,168,76,.04);}
+.rapport-table .total-row td{font-weight:700;color:var(--gold);border-top:2px solid var(--gold);}
+.prod-medal{margin-right:6px;}
 
 /* ── LOADING ── */
-.loading{text-align:center;padding:60px;color:var(--muted);}
-.loading-spinner{font-size:32px;animation:spin 1s linear infinite;display:block;margin-bottom:16px;}
-@keyframes spin{to{transform:rotate(360deg)}}
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
 
-@media(max-width:768px){
-  .bottom-grid{grid-template-columns:1fr;}
-  header{padding:12px 16px;}
-  .kpi-strip{padding:14px 16px;}
-  .section-title{padding:16px 16px 10px;}
-  .table-outer{padding:0 16px 24px;}
-  .bottom-grid{padding:0 16px 24px;}
+@media(max-width:900px){
+  .kpi-strip{grid-template-columns:repeat(2,1fr);}
+  .days-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:500px){
+  .kpi-strip{grid-template-columns:1fr 1fr;}
+  .days-grid{grid-template-columns:1fr;}
+  header{padding:10px 14px;}
+  .content{padding:14px;}
 }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
+  <div>
     <div class="logo-name">Latte Lounge</div>
-    <div class="logo-sub">Dashboard Ventes — 7 jours</div>
+    <div class="logo-sub">Dashboard Financier</div>
   </div>
   <div class="header-right">
-    <div class="badge-live"><span class="dot-live"></span>Live Firebase</div>
+    <div class="badge-live"><span class="dot"></span>Live</div>
     <span id="lastUpdate"></span>
-    <button class="btn-refresh" onclick="loadAll()">↻ Actualiser</button>
+    <button class="btn-sm" onclick="loadAll()">↻ Actualiser</button>
   </div>
 </header>
 
-<!-- KPI STRIP -->
-<div class="kpi-strip" id="kpiStrip">
-  <div class="loading"><span class="loading-spinner">⏳</span>Chargement...</div>
+<div class="content">
+
+  <!-- KPIs -->
+  <div class="section-label">📊 Résumé des 7 derniers jours</div>
+  <div class="kpi-strip" id="kpiStrip">
+    <div class="loading">⏳ Chargement...</div>
+  </div>
+
+  <!-- 7 jours -->
+  <div class="section-label">📅 Détail par journée</div>
+  <div class="days-grid" id="daysGrid">
+    <div class="loading">⏳ Chargement...</div>
+  </div>
+
+  <!-- Boutons rapport -->
+  <div class="section-label">📈 Rapports détaillés</div>
+  <div class="rapport-section">
+    <button class="btn-rapport" onclick="openRapport('7j')">📊 Rapport produits — 7 derniers jours</button>
+    <button class="btn-rapport" onclick="openRapport('mois')">📅 Rapport produits — 30 derniers jours</button>
+  </div>
+
 </div>
 
-<!-- TABLE SECTION -->
-<div class="section-title">
-  <div>
-    <h2>📊 Ventes par article — 7 derniers jours</h2>
-    <div class="sub">Chaque colonne = 1 journée · Triez par quantité ou chiffre d'affaires</div>
-  </div>
-  <div style="display:flex;gap:8px;">
-    <button class="btn-refresh" onclick="setSortMode('qty')" id="btnQty" style="color:var(--gold);border-color:var(--gold)">Quantité</button>
-    <button class="btn-refresh" onclick="setSortMode('ca')" id="btnCA">CA (MRU)</button>
-  </div>
-</div>
-<div class="table-outer" id="tableOuter">
-  <div class="loading"><span class="loading-spinner">⏳</span>Chargement des données...</div>
-</div>
-
-<!-- BOTTOM PANELS -->
-<div class="bottom-grid">
-  <div class="panel">
-    <div class="panel-header">
-      <span>🏆</span>
-      <h3>Top produits — 7 jours</h3>
+<!-- MODAL RAPPORT -->
+<div class="modal-overlay" id="rapportModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="rapportTitle">Rapport</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-gold" onclick="downloadPDF()">⬇️ Télécharger PDF</button>
+        <button class="btn-sm" onclick="closeRapport()">✕ Fermer</button>
+      </div>
     </div>
-    <div class="panel-body" id="topPanel">
-      <div class="loading" style="padding:20px;">⏳</div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-header">
-      <span>📉</span>
-      <h3>Peu/jamais commandés</h3>
-    </div>
-    <div class="panel-body" id="deadPanel">
-      <div class="loading" style="padding:20px;">⏳</div>
+    <div class="modal-body" id="rapportBody">
+      <div class="loading">⏳ Génération du rapport...</div>
     </div>
   </div>
 </div>
@@ -226,268 +182,281 @@ firebase.initializeApp({
 });
 const db = firebase.database();
 
-// ── MENU complet (pour détecter les jamais commandés) ──
-const MENU_ITEMS = [
-  "Expresso","Café Nous Nous","Double Expresso","Café au Lait","Cappuccino","Chocolat Chaud","Café Latte","Café Crème","Ice Coffee Au Chocolat","Ice Coffee Au Caramel","Café Americano",
-  "The Lipton ou Marocain","The au Citron","The Lipton Lait",
-  "Jus D'Orange","Jus De Citron","Jus De Pomme","Jus D'Avocat","Jus De Mangue","Jus De Pastèque","Jus D'Ananas","Jus De Kiwi","Jus De Banane","Jus De Cocktail",
-  "Milkshake Fraise","Milkshake Vanille","Milkshake Chocolat","Milkshake Lotus ou Oreo",
-  "Mojito Classic","Mojito Ananas","Mojito Menthe","Mojito Fraise","Eau Gazeuse","Eau Minérale","Grande Eau Minérale","Coca Cola","Fanta","Sprite",
-  "Salade De Fruit","Banana Split","Tiramisu","Granola",
-  "Oreo","Lotus","Nutella Banane",
-  "Glace Fraise","Glace Vanille","Glace Chocolat",
-  "Burger Classic","Cheeseburger","Egg Burger","Chicken Burger","Double Burger",
-  "Tacos Viande","Tacos Poulet","Baguettino Viande","Baguettino Poulet","Chawarma Viande","Chawarma Poulet","Panini Viande","Panini Poulet",
-  "Sandwich Brochette Viande","Sandwich Brochette Poulet","Sandwich Steack Viande","Sandwich Steack Poulet","Plat De Frites",
-  "Club Fromage","Club Poulet","Club Viande","Club Thon","Club Crispy",
-  "Demi Poulet","Poulet Complet","Brochette Poulet","Basmati Poulet","Escalope de Poulet","Cordon Bleu","Steak à l'ancienne","Brochette De Bœuf",
-  "Tajine Poulet","Tajine Viande","Tajine Kefta",
-  "Brochette Crevette","Crevettes Pannées","Crevettes Pli-Pli",
-  "Salade Mixte","Salade Niçoise","Salade Caesar","Salade Crevette",
-  "Spaghetti Bolognaise","Spaghetti Carbonara","Tagliatelle Poulet","Tagliatelle Viande","Tagliatelle Fruit De Mer","Lasagne Bolognaise","Gratin Pomme De Terre",
-  "Petit Dej Classic","Petit Dej Enfant","Petit Dej Complet","Latte Lounge",
-  "Omelette Nature","Omelette Thon","Omelette Fromage","Omelette Jambon","Omelette Jambon Fromage"
-];
-
-let sortMode = 'qty';
-let allData = {}; // { dateKey: [orders] }
-let days = [];
-
-function setSortMode(m){
-  sortMode=m;
-  document.getElementById('btnQty').style.color = m==='qty'?'var(--gold)':'var(--muted)';
-  document.getElementById('btnQty').style.borderColor = m==='qty'?'var(--gold)':'var(--border)';
-  document.getElementById('btnCA').style.color = m==='ca'?'var(--gold)':'var(--muted)';
-  document.getElementById('btnCA').style.borderColor = m==='ca'?'var(--gold)':'var(--border)';
-  renderTable();
+// ── JOUR (remise à zéro à 5h du matin) ──
+function getBusinessDay(date){
+  // Si l'heure est entre 0h et 5h, on considère que c'est encore la journée précédente
+  const d = new Date(date||Date.now());
+  if(d.getHours() < 5) d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0,10);
 }
 
-function pad(n){ return String(n).padStart(2,'0'); }
-
-function getDays(){
-  const d=[];
-  for(let i=6;i>=0;i--){
-    const date=new Date();
-    date.setDate(date.getDate()-i);
-    const iso=date.toISOString().slice(0,10);
+function getDays(n){
+  const days=[];
+  for(let i=n-1;i>=0;i--){
+    const d=new Date();
+    if(d.getHours()<5) d.setDate(d.getDate()-1); // ajustement 5h
+    d.setDate(d.getDate()-i);
+    const iso=d.toISOString().slice(0,10);
     const key=iso.replace(/-/g,'_');
-    const isToday=i===0;
     const dayNames=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-    const label=dayNames[date.getDay()];
-    const dateStr=pad(date.getDate())+'/'+pad(date.getMonth()+1);
-    d.push({iso,key,label,dateStr,isToday});
+    const monthNames=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+    const label=dayNames[d.getDay()];
+    const dateStr=d.getDate()+' '+monthNames[d.getMonth()];
+    const isToday=(iso===getBusinessDay());
+    days.push({iso,key,label,dateStr,isToday});
   }
-  return d;
+  return days;
 }
 
-async function loadAll(){
-  days=getDays();
-  allData={};
-  document.getElementById('tableOuter').innerHTML='<div class="loading"><span class="loading-spinner">⏳</span>Chargement...</div>';
-  document.getElementById('kpiStrip').innerHTML='<div class="loading"><span class="loading-spinner">⏳</span></div>';
-
+async function fetchDays(days){
+  const results={};
   await Promise.all(days.map(async d=>{
     try{
       const snap=await db.ref('caisse_historique/'+d.key).get();
-      allData[d.key]=snap.exists()&&Array.isArray(snap.val())?snap.val():[];
-    }catch(e){ allData[d.key]=[]; }
+      results[d.key]=snap.exists()&&Array.isArray(snap.val())?snap.val():[];
+    }catch(e){ results[d.key]=[]; }
   }));
-
-  document.getElementById('lastUpdate').textContent='Màj '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  renderKPIs();
-  renderTable();
-  renderPanels();
+  return results;
 }
 
-function renderKPIs(){
-  const allOrders=Object.values(allData).flat();
-  const total7=allOrders.reduce((s,o)=>s+o.total,0);
-  const count7=allOrders.length;
-  const today=allData[days[6].key]||[];
-  const todayTotal=today.reduce((s,o)=>s+o.total,0);
-  const bankily7=allOrders.filter(o=>o.payMode==='bankily').reduce((s,o)=>s+o.total,0);
-  const cash7=allOrders.filter(o=>o.payMode==='cash').reduce((s,o)=>s+o.total,0);
-  const avgJour=Math.round(total7/7);
-
+// ── RENDER KPIs ──
+function renderKPIs(days, data){
+  let total=0,bankily=0,cash=0,cmds=0;
+  days.forEach(d=>{
+    const orders=data[d.key]||[];
+    orders.forEach(o=>{
+      total+=o.total||0;
+      if(o.payMode==='bankily') bankily+=o.total||0;
+      else if(o.payMode==='cash') cash+=o.total||0;
+      cmds++;
+    });
+  });
   document.getElementById('kpiStrip').innerHTML=`
-    <div class="kpi gold">
-      <div class="kpi-label">Aujourd'hui</div>
-      <div class="kpi-val gold">${todayTotal.toLocaleString('fr-FR')} MRU</div>
-      <div class="kpi-sub">${today.length} commande${today.length>1?'s':''}</div>
+    <div class="kpi total">
+      <div class="kpi-label">💰 Total 7 jours</div>
+      <div class="kpi-val total">${total.toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
+      <div class="kpi-sub">${cmds} commandes</div>
     </div>
-    <div class="kpi">
-      <div class="kpi-label">Total 7 jours</div>
-      <div class="kpi-val">${total7.toLocaleString('fr-FR')} MRU</div>
-      <div class="kpi-sub">${count7} commandes</div>
+    <div class="kpi bankily">
+      <div class="kpi-label">📱 Bankily 7 jours</div>
+      <div class="kpi-val bankily">${bankily.toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
+      <div class="kpi-sub">${days.reduce((s,d)=>s+(data[d.key]||[]).filter(o=>o.payMode==='bankily').length,0)} transactions</div>
     </div>
-    <div class="kpi">
-      <div class="kpi-label">Moyenne / jour</div>
-      <div class="kpi-val">${avgJour.toLocaleString('fr-FR')} MRU</div>
-      <div class="kpi-sub">sur 7 jours</div>
+    <div class="kpi cash">
+      <div class="kpi-label">💵 Cash 7 jours</div>
+      <div class="kpi-val cash">${cash.toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
+      <div class="kpi-sub">${days.reduce((s,d)=>s+(data[d.key]||[]).filter(o=>o.payMode==='cash').length,0)} transactions</div>
     </div>
-    <div class="kpi green">
-      <div class="kpi-label">📱 Bankily 7j</div>
-      <div class="kpi-val green">${bankily7.toLocaleString('fr-FR')} MRU</div>
-      <div class="kpi-sub">${allOrders.filter(o=>o.payMode==='bankily').length} transactions</div>
-    </div>
-    <div class="kpi blue">
-      <div class="kpi-label">💵 Cash 7j</div>
-      <div class="kpi-val" style="color:#64B5F6">${cash7.toLocaleString('fr-FR')} MRU</div>
-      <div class="kpi-sub">${allOrders.filter(o=>o.payMode==='cash').length} transactions</div>
+    <div class="kpi cmds">
+      <div class="kpi-label">🧾 Commandes 7j</div>
+      <div class="kpi-val cmds">${cmds}</div>
+      <div class="kpi-sub">Moy. ${Math.round(total/7).toLocaleString('fr-FR')} MRU/jour</div>
     </div>
   `;
 }
 
-function getProductStats(){
-  // Agréger par produit et par jour
-  const byDay = {}; // { dayKey: { productName: {qty, ca} } }
-  const global = {}; // { productName: {qty, ca} }
+// ── RENDER DAY CARDS ──
+function renderDays(days, data){
+  const maxTotal=Math.max(...days.map(d=>(data[d.key]||[]).reduce((s,o)=>s+o.total,0)),1);
+  let html='';
   days.forEach(d=>{
-    byDay[d.key]={};
-    (allData[d.key]||[]).forEach(order=>{
+    const orders=data[d.key]||[];
+    const total=orders.reduce((s,o)=>s+o.total,0);
+    const bankily=orders.filter(o=>o.payMode==='bankily').reduce((s,o)=>s+o.total,0);
+    const cash=orders.filter(o=>o.payMode==='cash').reduce((s,o)=>s+o.total,0);
+    const cmds=orders.length;
+    const bankilyH=total>0?Math.round((bankily/maxTotal)*36):0;
+    const cashH=total>0?Math.round((cash/maxTotal)*36):0;
+
+    html+=`<div class="day-card${d.isToday?' today':''}">
+      <div class="day-header">
+        <div class="day-name">${d.label}</div>
+        <div class="day-date">${d.dateStr}</div>
+      </div>`;
+
+    if(!total){
+      html+=`<div class="day-empty">Aucune<br>commande</div>`;
+    } else {
+      html+=`
+      <div class="day-total">${total.toLocaleString('fr-FR')}</div>
+      <div class="day-total-label">MRU</div>
+      <div class="day-row">
+        <span class="day-row-label">📱 Bankily</span>
+        <span class="day-row-val bankily">${bankily.toLocaleString('fr-FR')}</span>
+      </div>
+      <div class="day-row">
+        <span class="day-row-label">💵 Cash</span>
+        <span class="day-row-val cash">${cash.toLocaleString('fr-FR')}</span>
+      </div>
+      <div class="day-row">
+        <span class="day-row-label">🧾 Cmds</span>
+        <span class="day-row-val cmds">${cmds}</span>
+      </div>
+      <div class="day-bars">
+        <div class="bar-wrap">
+          <div class="bar bankily" style="height:${bankilyH}px"></div>
+          <div class="bar-label">B</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar cash" style="height:${cashH}px"></div>
+          <div class="bar-label">C</div>
+        </div>
+      </div>`;
+    }
+    html+=`</div>`;
+  });
+  document.getElementById('daysGrid').innerHTML=html;
+}
+
+// ── LOAD ALL ──
+async function loadAll(){
+  document.getElementById('lastUpdate').textContent='⏳';
+  const days=getDays(7);
+  const data=await fetchDays(days);
+  renderKPIs(days,data);
+  renderDays(days,data);
+  document.getElementById('lastUpdate').textContent='Màj '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ── RAPPORTS ──
+async function openRapport(type){
+  document.getElementById('rapportModal').classList.add('open');
+  const n = type==='mois'?30:7;
+  const label = type==='mois'?'30 derniers jours':'7 derniers jours';
+  document.getElementById('rapportTitle').textContent=`📊 Rapport produits — ${label}`;
+  document.getElementById('rapportBody').innerHTML='<div class="loading">⏳ Génération...</div>';
+
+  const days=getDays(n);
+  const data=await fetchDays(days);
+
+  // Agréger produits
+  const products={};
+  days.forEach(d=>{
+    (data[d.key]||[]).forEach(order=>{
       (order.items||[]).forEach(it=>{
-        if(!byDay[d.key][it.name]) byDay[d.key][it.name]={qty:0,ca:0};
-        byDay[d.key][it.name].qty+=it.qty;
-        byDay[d.key][it.name].ca+=it.subtotal;
-        if(!global[it.name]) global[it.name]={qty:0,ca:0};
-        global[it.name].qty+=it.qty;
-        global[it.name].ca+=it.subtotal;
+        if(!products[it.name]) products[it.name]={qty:0,ca:0};
+        products[it.name].qty+=it.qty;
+        products[it.name].ca+=it.subtotal;
       });
     });
   });
-  return {byDay,global};
-}
 
-function renderTable(){
-  const {byDay,global}=getProductStats();
-  // Trier les produits par total
-  const sortedProducts=Object.entries(global)
-    .sort((a,b)=>sortMode==='qty'?b[1].qty-a[1].qty:b[1].ca-a[1].ca)
-    .map(([name])=>name);
-  // Ajouter les produits jamais commandés à la fin
-  MENU_ITEMS.forEach(name=>{ if(!global[name]) sortedProducts.push(name); });
-
-  // Max par colonne (pour barres)
-  const maxByDay={};
-  days.forEach(d=>{
-    const vals=Object.values(byDay[d.key]||{}).map(v=>sortMode==='qty'?v.qty:v.ca);
-    maxByDay[d.key]=Math.max(...vals,1);
-  });
-
-  let html=`<table class="sales-table"><thead><tr>
-    <th class="sticky">Article</th>
-    ${days.map(d=>`<th class="day-col${d.isToday?' today':''}">
-      <span class="day-name">${d.isToday?'⭐ Auj.':d.label}</span>
-      <span class="day-date">${d.dateStr}</span>
-    </th>`).join('')}
-    <th style="min-width:90px;text-align:center;color:var(--gold);">Total 7j</th>
-  </tr></thead><tbody>`;
-
-  // Totaux par jour
-  const dayTotals={};
-  days.forEach(d=>{
-    const orders=allData[d.key]||[];
-    dayTotals[d.key]={
-      total:orders.reduce((s,o)=>s+o.total,0),
-      count:orders.length
-    };
-  });
-
-  // Regrouper par catégorie
-  const CATS=[
-    {name:'☕ Boissons Chaudes',items:["Expresso","Café Nous Nous","Double Expresso","Café au Lait","Cappuccino","Chocolat Chaud","Café Latte","Café Crème","Ice Coffee Au Chocolat","Ice Coffee Au Caramel","Café Americano"]},
-    {name:'🍵 Thés',items:["The Lipton ou Marocain","The au Citron","The Lipton Lait"]},
-    {name:'🥤 Jus',items:["Jus D'Orange","Jus De Citron","Jus De Pomme","Jus D'Avocat","Jus De Mangue","Jus De Pastèque","Jus D'Ananas","Jus De Kiwi","Jus De Banane","Jus De Cocktail"]},
-    {name:'🥛 Milkshakes',items:["Milkshake Fraise","Milkshake Vanille","Milkshake Chocolat","Milkshake Lotus ou Oreo"]},
-    {name:'🌿 Mojitos & Froides',items:["Mojito Classic","Mojito Ananas","Mojito Menthe","Mojito Fraise","Eau Gazeuse","Eau Minérale","Grande Eau Minérale","Coca Cola","Fanta","Sprite"]},
-    {name:'🍨 Desserts',items:["Salade De Fruit","Banana Split","Tiramisu","Granola","Oreo","Lotus","Nutella Banane","Glace Fraise","Glace Vanille","Glace Chocolat"]},
-    {name:'🍔 Burgers',items:["Burger Classic","Cheeseburger","Egg Burger","Chicken Burger","Double Burger"]},
-    {name:'🌯 Snacks',items:["Tacos Viande","Tacos Poulet","Baguettino Viande","Baguettino Poulet","Chawarma Viande","Chawarma Poulet","Panini Viande","Panini Poulet","Sandwich Brochette Viande","Sandwich Brochette Poulet","Sandwich Steack Viande","Sandwich Steack Poulet","Plat De Frites"]},
-    {name:'🥪 Club Sandwich',items:["Club Fromage","Club Poulet","Club Viande","Club Thon","Club Crispy"]},
-    {name:'🍗 Viandes',items:["Demi Poulet","Poulet Complet","Brochette Poulet","Basmati Poulet","Escalope de Poulet","Cordon Bleu","Steak à l'ancienne","Brochette De Bœuf"]},
-    {name:'🫕 Tajines',items:["Tajine Poulet","Tajine Viande","Tajine Kefta"]},
-    {name:'🦐 Fruits De Mer',items:["Brochette Crevette","Crevettes Pannées","Crevettes Pli-Pli"]},
-    {name:'🥗 Salades',items:["Salade Mixte","Salade Niçoise","Salade Caesar","Salade Crevette"]},
-    {name:'🍝 Pâtes',items:["Spaghetti Bolognaise","Spaghetti Carbonara","Tagliatelle Poulet","Tagliatelle Viande","Tagliatelle Fruit De Mer","Lasagne Bolognaise","Gratin Pomme De Terre"]},
-    {name:'🌅 Petits Déj',items:["Petit Dej Classic","Petit Dej Enfant","Petit Dej Complet","Latte Lounge"]},
-    {name:'🍳 Omelettes',items:["Omelette Nature","Omelette Thon","Omelette Fromage","Omelette Jambon","Omelette Jambon Fromage"]},
-  ];
-
-  CATS.forEach(cat=>{
-    html+=`<tr class="cat-row"><td class="sticky" colspan="${days.length+2}">${cat.name}</td></tr>`;
-    cat.items.forEach(name=>{
-      const g=global[name]||{qty:0,ca:0};
-      const totalVal=sortMode==='qty'?g.qty:g.ca;
-      html+=`<tr><td class="sticky" title="${name}">${name}</td>`;
-      days.forEach(d=>{
-        const s=byDay[d.key][name]||{qty:0,ca:0};
-        const val=sortMode==='qty'?s.qty:s.ca;
-        const pct=val>0?Math.round((val/maxByDay[d.key])*100):0;
-        const hasVal=val>0;
-        html+=`<td class="num${hasVal?' has-val':''}${d.isToday?' today-col':''}">
-          ${hasVal?(sortMode==='qty'?`×${val}`:`${val}`):'·'}
-          ${hasVal?`<div class="bar" style="width:${pct}%"></div>`:''}
-        </td>`;
-      });
-      html+=`<td class="num has-val" style="color:var(--gold);font-weight:700;">${totalVal>0?(sortMode==='qty'?`×${totalVal}`:`${totalVal} MRU`):'·'}</td></tr>`;
-    });
-  });
-
-  // Total row
-  html+=`<tr class="total-row"><td class="sticky">TOTAL JOURNÉE</td>`;
-  days.forEach(d=>{
-    const dt=dayTotals[d.key];
-    html+=`<td class="num has-val${d.isToday?' today-col':''}" style="color:var(--gold2);">${dt.total?dt.total.toLocaleString('fr-FR')+' MRU':'—'}<br><span style="font-size:10px;color:var(--muted);">${dt.count?dt.count+' cmd':''}</span></td>`;
-  });
-  html+=`<td class="num has-val" style="color:var(--gold2);">${Object.values(dayTotals).reduce((s,d)=>s+d.total,0).toLocaleString('fr-FR')} MRU</td></tr>`;
-
-  html+=`</tbody></table>`;
-  document.getElementById('tableOuter').innerHTML=html;
-}
-
-function renderPanels(){
-  const {global}=getProductStats();
-  const sorted=Object.entries(global).sort((a,b)=>sortMode==='qty'?b[1].qty-a[1].qty:b[1].ca-a[1].ca);
-  const maxVal=sorted.length?(sortMode==='qty'?sorted[0][1].qty:sorted[0][1].ca):1;
+  const sorted=Object.entries(products).sort((a,b)=>b[1].ca-a[1].ca);
+  const totalCA=sorted.reduce((s,[,v])=>s+v.ca,0);
   const medals=['🥇','🥈','🥉'];
 
-  // Top panel
-  let topHtml='';
-  if(!sorted.length){ topHtml='<div style="text-align:center;color:var(--muted);padding:20px;">Aucune donnée sur 7 jours</div>'; }
-  else {
-    sorted.slice(0,20).forEach(([name,s],i)=>{
-      const val=sortMode==='qty'?s.qty:s.ca;
-      const pct=Math.round((val/maxVal)*100);
-      topHtml+=`<div class="prod-row">
-        <span class="medal">${medals[i]||''}</span>
-        <span class="prod-rank">${i+1}</span>
-        <span class="prod-name" title="${name}">${name}</span>
-        <div class="prod-bar-wrap"><div class="prod-bar" style="width:${pct}%"></div></div>
-        <span class="prod-qty">${sortMode==='qty'?`×${s.qty}`:`${s.ca} MRU`}</span>
-        <span class="prod-ca">${sortMode==='qty'?`${s.ca} MRU`:`×${s.qty}`}</span>
-      </div>`;
-    });
+  if(!sorted.length){
+    document.getElementById('rapportBody').innerHTML='<div class="loading">Aucune donnée sur cette période</div>';
+    return;
   }
-  document.getElementById('topPanel').innerHTML=topHtml;
 
-  // Dead panel
-  const never=MENU_ITEMS.filter(n=>!global[n]);
-  const rare=MENU_ITEMS.filter(n=>global[n]&&global[n].qty<=2);
-  let deadHtml='';
-  if(never.length){
-    deadHtml+=`<div style="font-size:10px;color:var(--red);font-weight:700;letter-spacing:1.5px;margin-bottom:8px;text-transform:uppercase;">⚠ Jamais commandés (7j) — ${never.length} articles</div>`;
-    never.forEach(n=>{ deadHtml+=`<div class="dead-row"><span class="dead-name">${n}</span><span class="dead-badge never">0 vente</span></div>`; });
-  }
-  if(rare.length){
-    deadHtml+=`<div style="font-size:10px;color:var(--gold);font-weight:700;letter-spacing:1.5px;margin:12px 0 8px;text-transform:uppercase;">📉 Très peu commandés (≤2)</div>`;
-    rare.forEach(n=>{ deadHtml+=`<div class="dead-row"><span class="dead-name">${n}</span><span class="dead-badge rare">×${global[n].qty}</span></div>`; });
-  }
-  if(!never.length&&!rare.length) deadHtml='<div style="text-align:center;color:var(--green2);padding:20px;font-size:13px;">✅ Tous les produits ont été commandés !</div>';
-  document.getElementById('deadPanel').innerHTML=deadHtml;
+  let html=`
+    <table class="rapport-table">
+      <thead><tr>
+        <th>#</th>
+        <th>Article</th>
+        <th>Qté vendue</th>
+        <th>Chiffre d'affaires</th>
+        <th>% du CA</th>
+      </tr></thead>
+      <tbody>`;
+
+  sorted.forEach(([name,{qty,ca}],i)=>{
+    const pct=Math.round((ca/totalCA)*100);
+    html+=`<tr>
+      <td>${medals[i]||i+1}</td>
+      <td>${name}</td>
+      <td>${qty}</td>
+      <td>${ca.toLocaleString('fr-FR')} MRU</td>
+      <td>${pct}%</td>
+    </tr>`;
+  });
+
+  html+=`</tbody>
+    <tfoot><tr class="total-row">
+      <td colspan="2">TOTAL</td>
+      <td>${sorted.reduce((s,[,v])=>s+v.qty,0)}</td>
+      <td>${totalCA.toLocaleString('fr-FR')} MRU</td>
+      <td>100%</td>
+    </tr></tfoot>
+  </table>`;
+
+  document.getElementById('rapportBody').innerHTML=html;
 }
 
+function downloadPDF(){
+  const title = document.getElementById('rapportTitle').textContent;
+  const body  = document.getElementById('rapportBody').innerHTML;
+  const now   = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <style>
+      @page { size: A4; margin: 15mm; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #1a1a1a; background: #fff; }
+
+      /* Header */
+      .pdf-header { display: flex; justify-content: space-between; align-items: flex-start;
+        border-bottom: 3px solid #C9A84C; padding-bottom: 14px; margin-bottom: 20px; }
+      .pdf-logo { font-size: 22px; font-weight: 900; color: #1B2A4A; letter-spacing: 3px; text-transform: uppercase; }
+      .pdf-logo span { display: block; font-size: 10px; font-weight: 400; color: #888; letter-spacing: 2px; margin-top: 3px; }
+      .pdf-meta { text-align: right; font-size: 10px; color: #888; line-height: 1.8; }
+      .pdf-title { font-size: 16px; font-weight: 700; color: #1B2A4A; margin-bottom: 16px; padding: 10px 14px;
+        background: #F5F0E8; border-left: 4px solid #C9A84C; border-radius: 4px; }
+
+      /* Table */
+      table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+      thead th { background: #1B2A4A; color: #F0D080; font-size: 10px; text-transform: uppercase;
+        letter-spacing: 1.5px; padding: 9px 12px; text-align: left; }
+      tbody td { padding: 8px 12px; border-bottom: 1px solid #E8E4DC; font-size: 12px; }
+      tbody tr:nth-child(even) td { background: #FAFAF7; }
+      tbody tr:hover td { background: #FDF8EE; }
+      tfoot td { padding: 10px 12px; font-weight: 700; color: #1B2A4A; background: #F5F0E8;
+        border-top: 2px solid #C9A84C; font-size: 13px; }
+
+      /* Footer */
+      .pdf-footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #E8E4DC;
+        display: flex; justify-content: space-between; font-size: 9px; color: #aaa; }
+
+      @media print {
+        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      }
+    </style>
+  </head><body>
+    <div class="pdf-header">
+      <div class="pdf-logo">LATTE LOUNGE<span>Restaurant & Café · Nouakchott</span></div>
+      <div class="pdf-meta">
+        Généré le : ${now}<br>
+        Route de Nouadhibou<br>
+        +222 27 17 61 91
+      </div>
+    </div>
+    <div class="pdf-title">${title}</div>
+    ${body}
+    <div class="pdf-footer">
+      <span>Latte Lounge © ${new Date().getFullYear()}</span>
+      <span>Document confidentiel — usage interne</span>
+      <span>lattelounge-dashboard.pages.dev</span>
+    </div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>{ w.focus(); w.print(); }, 800);
+}
+
+function closeRapport(){
+  document.getElementById('rapportModal').classList.remove('open');
+}
+
+// Fermer modal en cliquant dehors
+document.getElementById('rapportModal').addEventListener('click',function(e){
+  if(e.target===this) closeRapport();
+});
+
+// Démarrage + rafraîchissement auto toutes les 5 min
 loadAll();
-// Rafraîchir toutes les 5 minutes
 setInterval(loadAll, 5*60*1000);
 </script>
 </body>
