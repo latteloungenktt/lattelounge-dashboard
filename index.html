@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Latte Lounge — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500;700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
@@ -35,33 +35,52 @@ header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px soli
 
 /* ── CONTENT ── */
 .content{padding:20px 24px;max-width:1200px;margin:0 auto;}
+.section-label{font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;margin-top:8px;display:flex;align-items:center;gap:8px;font-weight:600;}
+.section-label .line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
 
-/* ── SECTION TITLE ── */
-.section-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+/* ── AUJOURD'HUI — HERO ── */
+.today-hero{background:linear-gradient(135deg,#1a2535,#0f1825);border:2px solid var(--gold);border-radius:20px;padding:24px;margin-bottom:32px;position:relative;overflow:hidden;}
+.today-hero::before{content:'⭐ AUJOURD''HUI';position:absolute;top:16px;right:20px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px;}
+.today-date{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;}
+.today-total-block{text-align:center;padding:16px 0 24px;}
+.today-total-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:3px;margin-bottom:8px;}
+.today-total{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--gold);line-height:1;}
+.today-total .unit{font-size:24px;font-weight:400;opacity:.7;}
+.today-cmds{font-size:14px;color:var(--text);margin-top:10px;}
+.today-cmds b{color:var(--gold2);}
+.today-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.split-card{background:rgba(0,0,0,.25);border-radius:14px;padding:18px;text-align:center;border:1px solid var(--border);}
+.split-card.bankily{border-color:rgba(61,170,110,.4);}
+.split-card.cash{border-color:rgba(58,123,213,.4);}
+.split-icon{font-size:24px;margin-bottom:6px;}
+.split-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+.split-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:700;}
+.split-val.bankily{color:var(--green2);}
+.split-val.cash{color:var(--blue2);}
+.split-count{font-size:11px;color:var(--muted);margin-top:6px;}
 
-/* ── KPI STRIP ── */
-.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+/* ── KPIs SEMAINE ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .kpi.total::before{background:linear-gradient(90deg,var(--gold),var(--gold2));}
 .kpi.bankily::before{background:linear-gradient(90deg,var(--green),var(--green2));}
 .kpi.cash::before{background:linear-gradient(90deg,var(--blue),var(--blue2));}
 .kpi.cmds::before{background:linear-gradient(90deg,#9B59B6,#D7BDE2);}
 .kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
-.kpi-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1;}
+.kpi-val{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1;}
 .kpi-val.total{color:var(--gold);}
 .kpi-val.bankily{color:var(--green2);}
 .kpi-val.cash{color:var(--blue2);}
 .kpi-val.cmds{color:#D7BDE2;}
 .kpi-sub{font-size:11px;color:var(--muted);margin-top:6px;}
-.kpi-unit{font-size:14px;font-weight:400;opacity:.7;}
+.kpi-unit{font-size:13px;font-weight:400;opacity:.7;}
 
-/* ── 7 DAYS GRID ── */
-.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:28px;}
-.day-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;transition:transform .2s;}
-.day-card:hover{transform:translateY(-2px);}
+/* ── 7 DAYS CARDS ── */
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:32px;}
+.day-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;transition:transform .2s;}
+.day-card:hover{transform:translateY(-2px);border-color:var(--gold);}
 .day-card.today{border-color:var(--gold);background:linear-gradient(135deg,var(--surface),rgba(201,168,76,.06));}
-.day-card.today::before{content:'⭐';position:absolute;top:8px;right:10px;font-size:12px;}
 .day-header{text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border);}
 .day-name{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
 .day-date{font-size:13px;color:var(--text);font-weight:600;margin-top:2px;}
@@ -73,16 +92,12 @@ header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px soli
 .day-row-val.bankily{color:var(--green2);}
 .day-row-val.cash{color:var(--blue2);}
 .day-row-val.cmds{color:#D7BDE2;}
-
-/* Bar chart inside card */
 .day-bars{display:flex;gap:3px;align-items:flex-end;height:40px;margin-top:4px;}
 .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
 .bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s ease;}
 .bar.bankily{background:var(--green);}
 .bar.cash{background:var(--blue);}
 .bar-label{font-size:8px;color:var(--muted);text-transform:uppercase;}
-
-/* Empty day */
 .day-empty{text-align:center;color:var(--muted);font-size:11px;padding:10px 0;}
 
 /* ── RAPPORT BUTTONS ── */
@@ -90,11 +105,11 @@ header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px soli
 .btn-rapport{flex:1;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Jost',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn-rapport:hover{border-color:var(--gold);color:var(--gold);}
 
-/* ── RAPPORT MODAL ── */
+/* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;}
-.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .modal-header h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);}
 .modal-body{padding:20px;}
 .rapport-table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -102,20 +117,22 @@ header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px soli
 .rapport-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;}
 .rapport-table tr:hover td{background:rgba(201,168,76,.04);}
 .rapport-table .total-row td{font-weight:700;color:var(--gold);border-top:2px solid var(--gold);}
-.prod-medal{margin-right:6px;}
 
-/* ── LOADING ── */
 .loading{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
 
 @media(max-width:900px){
   .kpi-strip{grid-template-columns:repeat(2,1fr);}
-  .days-grid{grid-template-columns:repeat(2,1fr);}
+  .days-grid{grid-template-columns:repeat(3,1fr);}
+  .today-total{font-size:42px;}
 }
-@media(max-width:500px){
+@media(max-width:560px){
   .kpi-strip{grid-template-columns:1fr 1fr;}
-  .days-grid{grid-template-columns:1fr;}
+  .days-grid{grid-template-columns:1fr 1fr;}
   header{padding:10px 14px;}
   .content{padding:14px;}
+  .today-hero{padding:18px;}
+  .today-total{font-size:38px;}
+  .rapport-section{flex-direction:column;}
 }
 </style>
 </head>
@@ -135,20 +152,25 @@ header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px soli
 
 <div class="content">
 
-  <!-- KPIs -->
-  <div class="section-label">📊 Résumé des 7 derniers jours</div>
+  <!-- AUJOURD'HUI EN PRIORITÉ -->
+  <div id="todayHero">
+    <div class="loading">⏳ Chargement des données du jour...</div>
+  </div>
+
+  <!-- KPIs SEMAINE -->
+  <div class="section-label">📊 Résumé de la semaine <span class="line"></span></div>
   <div class="kpi-strip" id="kpiStrip">
     <div class="loading">⏳ Chargement...</div>
   </div>
 
-  <!-- 7 jours -->
-  <div class="section-label">📅 Détail par journée</div>
+  <!-- 7 JOURS -->
+  <div class="section-label">📅 Les 7 derniers jours <span class="line"></span></div>
   <div class="days-grid" id="daysGrid">
     <div class="loading">⏳ Chargement...</div>
   </div>
 
-  <!-- Boutons rapport -->
-  <div class="section-label">📈 Rapports détaillés</div>
+  <!-- RAPPORTS -->
+  <div class="section-label">📈 Rapports produits <span class="line"></span></div>
   <div class="rapport-section">
     <button class="btn-rapport" onclick="openRapport('7j')">📊 Rapport produits — 7 derniers jours</button>
     <button class="btn-rapport" onclick="openRapport('mois')">📅 Rapport produits — 30 derniers jours</button>
@@ -162,7 +184,7 @@ header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px soli
     <div class="modal-header">
       <h2 id="rapportTitle">Rapport</h2>
       <div style="display:flex;gap:8px;">
-        <button class="btn-gold" onclick="downloadPDF()">⬇️ Télécharger PDF</button>
+        <button class="btn-gold" onclick="downloadPDF()">⬇️ PDF</button>
         <button class="btn-sm" onclick="closeRapport()">✕ Fermer</button>
       </div>
     </div>
@@ -173,7 +195,6 @@ header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px soli
 </div>
 
 <script>
-// ── FIREBASE ──
 firebase.initializeApp({
   apiKey:"AIzaSyBZnorgx0FgFzQk-ynMWLWAGblA1797wL8",
   databaseURL:"https://latte-lounge-caisse-default-rtdb.europe-west1.firebasedatabase.app",
@@ -182,9 +203,8 @@ firebase.initializeApp({
 });
 const db = firebase.database();
 
-// ── JOUR (remise à zéro à 5h du matin) ──
+// ── JOUR COMMERCIAL (remise à zéro à 5h du matin) ──
 function getBusinessDay(date){
-  // Si l'heure est entre 0h et 5h, on considère que c'est encore la journée précédente
   const d = new Date(date||Date.now());
   if(d.getHours() < 5) d.setDate(d.getDate() - 1);
   return d.toISOString().slice(0,10);
@@ -192,9 +212,11 @@ function getBusinessDay(date){
 
 function getDays(n){
   const days=[];
+  // Base = jour commercial actuel (tient compte du décalage 5h)
+  const base = new Date();
+  if(base.getHours() < 5) base.setDate(base.getDate() - 1);
   for(let i=n-1;i>=0;i--){
-    const d=new Date();
-    if(d.getHours()<5) d.setDate(d.getDate()-1); // ajustement 5h
+    const d=new Date(base);
     d.setDate(d.getDate()-i);
     const iso=d.toISOString().slice(0,10);
     const key=iso.replace(/-/g,'_');
@@ -213,23 +235,58 @@ async function fetchDays(days){
   await Promise.all(days.map(async d=>{
     try{
       const snap=await db.ref('caisse_historique/'+d.key).get();
-      results[d.key]=snap.exists()&&Array.isArray(snap.val())?snap.val():[];
+      const val = snap.exists() ? snap.val() : null;
+      results[d.key] = Array.isArray(val) ? val.filter(o=>o) : [];
     }catch(e){ results[d.key]=[]; }
   }));
   return results;
 }
 
-// ── RENDER KPIs ──
+function calcDay(orders){
+  let total=0,bankily=0,cash=0,bCount=0,cCount=0;
+  (orders||[]).forEach(o=>{
+    total += o.total||0;
+    if(o.payMode==='bankily'){ bankily+=o.total||0; bCount++; }
+    else if(o.payMode==='cash'){ cash+=o.total||0; cCount++; }
+  });
+  return {total,bankily,cash,cmds:(orders||[]).length,bCount,cCount};
+}
+
+// ── HERO AUJOURD'HUI ──
+function renderToday(today, data){
+  const s = calcDay(data[today.key]);
+  const dateFull = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('todayHero').innerHTML=`
+    <div class="today-hero">
+      <div class="today-date">${dateFull}</div>
+      <div class="today-total-block">
+        <div class="today-total-label">💰 Total encaissé aujourd'hui</div>
+        <div class="today-total">${s.total.toLocaleString('fr-FR')} <span class="unit">MRU</span></div>
+        <div class="today-cmds"><b>${s.cmds}</b> commande${s.cmds>1?'s':''} aujourd'hui</div>
+      </div>
+      <div class="today-split">
+        <div class="split-card bankily">
+          <div class="split-icon">📱</div>
+          <div class="split-label">Bankily</div>
+          <div class="split-val bankily">${s.bankily.toLocaleString('fr-FR')} MRU</div>
+          <div class="split-count">${s.bCount} transaction${s.bCount>1?'s':''}</div>
+        </div>
+        <div class="split-card cash">
+          <div class="split-icon">💵</div>
+          <div class="split-label">Cash</div>
+          <div class="split-val cash">${s.cash.toLocaleString('fr-FR')} MRU</div>
+          <div class="split-count">${s.cCount} transaction${s.cCount>1?'s':''}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── KPIs SEMAINE ──
 function renderKPIs(days, data){
-  let total=0,bankily=0,cash=0,cmds=0;
+  let total=0,bankily=0,cash=0,cmds=0,bCount=0,cCount=0;
   days.forEach(d=>{
-    const orders=data[d.key]||[];
-    orders.forEach(o=>{
-      total+=o.total||0;
-      if(o.payMode==='bankily') bankily+=o.total||0;
-      else if(o.payMode==='cash') cash+=o.total||0;
-      cmds++;
-    });
+    const s=calcDay(data[d.key]);
+    total+=s.total; bankily+=s.bankily; cash+=s.cash; cmds+=s.cmds; bCount+=s.bCount; cCount+=s.cCount;
   });
   document.getElementById('kpiStrip').innerHTML=`
     <div class="kpi total">
@@ -240,67 +297,45 @@ function renderKPIs(days, data){
     <div class="kpi bankily">
       <div class="kpi-label">📱 Bankily 7 jours</div>
       <div class="kpi-val bankily">${bankily.toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
-      <div class="kpi-sub">${days.reduce((s,d)=>s+(data[d.key]||[]).filter(o=>o.payMode==='bankily').length,0)} transactions</div>
+      <div class="kpi-sub">${bCount} transactions</div>
     </div>
     <div class="kpi cash">
       <div class="kpi-label">💵 Cash 7 jours</div>
       <div class="kpi-val cash">${cash.toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
-      <div class="kpi-sub">${days.reduce((s,d)=>s+(data[d.key]||[]).filter(o=>o.payMode==='cash').length,0)} transactions</div>
+      <div class="kpi-sub">${cCount} transactions</div>
     </div>
     <div class="kpi cmds">
-      <div class="kpi-label">🧾 Commandes 7j</div>
-      <div class="kpi-val cmds">${cmds}</div>
-      <div class="kpi-sub">Moy. ${Math.round(total/7).toLocaleString('fr-FR')} MRU/jour</div>
-    </div>
-  `;
+      <div class="kpi-label">🧾 Moyenne / jour</div>
+      <div class="kpi-val cmds">${Math.round(total/7).toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
+      <div class="kpi-sub">${(cmds/7).toFixed(1)} cmd/jour</div>
+    </div>`;
 }
 
-// ── RENDER DAY CARDS ──
+// ── 7 JOURS ──
 function renderDays(days, data){
-  const maxTotal=Math.max(...days.map(d=>(data[d.key]||[]).reduce((s,o)=>s+o.total,0)),1);
+  const maxTotal=Math.max(...days.map(d=>calcDay(data[d.key]).total),1);
   let html='';
   days.forEach(d=>{
-    const orders=data[d.key]||[];
-    const total=orders.reduce((s,o)=>s+o.total,0);
-    const bankily=orders.filter(o=>o.payMode==='bankily').reduce((s,o)=>s+o.total,0);
-    const cash=orders.filter(o=>o.payMode==='cash').reduce((s,o)=>s+o.total,0);
-    const cmds=orders.length;
-    const bankilyH=total>0?Math.round((bankily/maxTotal)*36):0;
-    const cashH=total>0?Math.round((cash/maxTotal)*36):0;
-
+    const s=calcDay(data[d.key]);
+    const bankilyH=s.total>0?Math.round((s.bankily/maxTotal)*36):0;
+    const cashH=s.total>0?Math.round((s.cash/maxTotal)*36):0;
     html+=`<div class="day-card${d.isToday?' today':''}">
       <div class="day-header">
-        <div class="day-name">${d.label}</div>
+        <div class="day-name">${d.isToday?'⭐ '+d.label:d.label}</div>
         <div class="day-date">${d.dateStr}</div>
       </div>`;
-
-    if(!total){
+    if(!s.total){
       html+=`<div class="day-empty">Aucune<br>commande</div>`;
     } else {
       html+=`
-      <div class="day-total">${total.toLocaleString('fr-FR')}</div>
+      <div class="day-total">${s.total.toLocaleString('fr-FR')}</div>
       <div class="day-total-label">MRU</div>
-      <div class="day-row">
-        <span class="day-row-label">📱 Bankily</span>
-        <span class="day-row-val bankily">${bankily.toLocaleString('fr-FR')}</span>
-      </div>
-      <div class="day-row">
-        <span class="day-row-label">💵 Cash</span>
-        <span class="day-row-val cash">${cash.toLocaleString('fr-FR')}</span>
-      </div>
-      <div class="day-row">
-        <span class="day-row-label">🧾 Cmds</span>
-        <span class="day-row-val cmds">${cmds}</span>
-      </div>
+      <div class="day-row"><span class="day-row-label">📱 Bankily</span><span class="day-row-val bankily">${s.bankily.toLocaleString('fr-FR')}</span></div>
+      <div class="day-row"><span class="day-row-label">💵 Cash</span><span class="day-row-val cash">${s.cash.toLocaleString('fr-FR')}</span></div>
+      <div class="day-row"><span class="day-row-label">🧾 Cmds</span><span class="day-row-val cmds">${s.cmds}</span></div>
       <div class="day-bars">
-        <div class="bar-wrap">
-          <div class="bar bankily" style="height:${bankilyH}px"></div>
-          <div class="bar-label">B</div>
-        </div>
-        <div class="bar-wrap">
-          <div class="bar cash" style="height:${cashH}px"></div>
-          <div class="bar-label">C</div>
-        </div>
+        <div class="bar-wrap"><div class="bar bankily" style="height:${bankilyH}px"></div><div class="bar-label">B</div></div>
+        <div class="bar-wrap"><div class="bar cash" style="height:${cashH}px"></div><div class="bar-label">C</div></div>
       </div>`;
     }
     html+=`</div>`;
@@ -312,7 +347,9 @@ function renderDays(days, data){
 async function loadAll(){
   document.getElementById('lastUpdate').textContent='⏳';
   const days=getDays(7);
+  const today=days[days.length-1]; // dernier = aujourd'hui
   const data=await fetchDays(days);
+  renderToday(today,data);
   renderKPIs(days,data);
   renderDays(days,data);
   document.getElementById('lastUpdate').textContent='Màj '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
@@ -325,11 +362,8 @@ async function openRapport(type){
   const label = type==='mois'?'30 derniers jours':'7 derniers jours';
   document.getElementById('rapportTitle').textContent=`📊 Rapport produits — ${label}`;
   document.getElementById('rapportBody').innerHTML='<div class="loading">⏳ Génération...</div>';
-
   const days=getDays(n);
   const data=await fetchDays(days);
-
-  // Agréger produits
   const products={};
   days.forEach(d=>{
     (data[d.key]||[]).forEach(order=>{
@@ -340,122 +374,60 @@ async function openRapport(type){
       });
     });
   });
-
   const sorted=Object.entries(products).sort((a,b)=>b[1].ca-a[1].ca);
   const totalCA=sorted.reduce((s,[,v])=>s+v.ca,0);
   const medals=['🥇','🥈','🥉'];
-
   if(!sorted.length){
     document.getElementById('rapportBody').innerHTML='<div class="loading">Aucune donnée sur cette période</div>';
     return;
   }
-
-  let html=`
-    <table class="rapport-table">
-      <thead><tr>
-        <th>#</th>
-        <th>Article</th>
-        <th>Qté vendue</th>
-        <th>Chiffre d'affaires</th>
-        <th>% du CA</th>
-      </tr></thead>
-      <tbody>`;
-
+  let html=`<table class="rapport-table"><thead><tr><th>#</th><th>Article</th><th>Qté</th><th>Chiffre d'affaires</th><th>%</th></tr></thead><tbody>`;
   sorted.forEach(([name,{qty,ca}],i)=>{
-    const pct=Math.round((ca/totalCA)*100);
-    html+=`<tr>
-      <td>${medals[i]||i+1}</td>
-      <td>${name}</td>
-      <td>${qty}</td>
-      <td>${ca.toLocaleString('fr-FR')} MRU</td>
-      <td>${pct}%</td>
-    </tr>`;
+    const pct=totalCA>0?Math.round((ca/totalCA)*100):0;
+    html+=`<tr><td>${medals[i]||i+1}</td><td>${name}</td><td>${qty}</td><td>${ca.toLocaleString('fr-FR')} MRU</td><td>${pct}%</td></tr>`;
   });
-
-  html+=`</tbody>
-    <tfoot><tr class="total-row">
-      <td colspan="2">TOTAL</td>
-      <td>${sorted.reduce((s,[,v])=>s+v.qty,0)}</td>
-      <td>${totalCA.toLocaleString('fr-FR')} MRU</td>
-      <td>100%</td>
-    </tr></tfoot>
-  </table>`;
-
+  html+=`</tbody><tfoot><tr class="total-row"><td colspan="2">TOTAL</td><td>${sorted.reduce((s,[,v])=>s+v.qty,0)}</td><td>${totalCA.toLocaleString('fr-FR')} MRU</td><td>100%</td></tr></tfoot></table>`;
   document.getElementById('rapportBody').innerHTML=html;
 }
 
 function downloadPDF(){
-  const title = document.getElementById('rapportTitle').textContent;
-  const body  = document.getElementById('rapportBody').innerHTML;
-  const now   = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
-
-  const w = window.open('','_blank');
-  w.document.write(`<!DOCTYPE html><html><head>
-    <meta charset="UTF-8">
-    <title>${title}</title>
+  const title=document.getElementById('rapportTitle').textContent;
+  const body=document.getElementById('rapportBody').innerHTML;
+  const now=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
     <style>
-      @page { size: A4; margin: 15mm; }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #1a1a1a; background: #fff; }
-
-      /* Header */
-      .pdf-header { display: flex; justify-content: space-between; align-items: flex-start;
-        border-bottom: 3px solid #C9A84C; padding-bottom: 14px; margin-bottom: 20px; }
-      .pdf-logo { font-size: 22px; font-weight: 900; color: #1B2A4A; letter-spacing: 3px; text-transform: uppercase; }
-      .pdf-logo span { display: block; font-size: 10px; font-weight: 400; color: #888; letter-spacing: 2px; margin-top: 3px; }
-      .pdf-meta { text-align: right; font-size: 10px; color: #888; line-height: 1.8; }
-      .pdf-title { font-size: 16px; font-weight: 700; color: #1B2A4A; margin-bottom: 16px; padding: 10px 14px;
-        background: #F5F0E8; border-left: 4px solid #C9A84C; border-radius: 4px; }
-
-      /* Table */
-      table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-      thead th { background: #1B2A4A; color: #F0D080; font-size: 10px; text-transform: uppercase;
-        letter-spacing: 1.5px; padding: 9px 12px; text-align: left; }
-      tbody td { padding: 8px 12px; border-bottom: 1px solid #E8E4DC; font-size: 12px; }
-      tbody tr:nth-child(even) td { background: #FAFAF7; }
-      tbody tr:hover td { background: #FDF8EE; }
-      tfoot td { padding: 10px 12px; font-weight: 700; color: #1B2A4A; background: #F5F0E8;
-        border-top: 2px solid #C9A84C; font-size: 13px; }
-
-      /* Footer */
-      .pdf-footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #E8E4DC;
-        display: flex; justify-content: space-between; font-size: 9px; color: #aaa; }
-
-      @media print {
-        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      }
-    </style>
-  </head><body>
+      @page{size:A4;margin:15mm;}
+      *{box-sizing:border-box;margin:0;padding:0;}
+      body{font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:#1a1a1a;background:#fff;}
+      .pdf-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #C9A84C;padding-bottom:14px;margin-bottom:20px;}
+      .pdf-logo{font-size:22px;font-weight:900;color:#1B2A4A;letter-spacing:3px;text-transform:uppercase;}
+      .pdf-logo span{display:block;font-size:10px;font-weight:400;color:#888;letter-spacing:2px;margin-top:3px;}
+      .pdf-meta{text-align:right;font-size:10px;color:#888;line-height:1.8;}
+      .pdf-title{font-size:16px;font-weight:700;color:#1B2A4A;margin-bottom:16px;padding:10px 14px;background:#F5F0E8;border-left:4px solid #C9A84C;border-radius:4px;}
+      table{width:100%;border-collapse:collapse;margin-top:8px;}
+      thead th{background:#1B2A4A;color:#F0D080;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;padding:9px 12px;text-align:left;}
+      tbody td{padding:8px 12px;border-bottom:1px solid #E8E4DC;font-size:12px;}
+      tbody tr:nth-child(even) td{background:#FAFAF7;}
+      tfoot td{padding:10px 12px;font-weight:700;color:#1B2A4A;background:#F5F0E8;border-top:2px solid #C9A84C;font-size:13px;}
+      .pdf-footer{margin-top:24px;padding-top:12px;border-top:1px solid #E8E4DC;display:flex;justify-content:space-between;font-size:9px;color:#aaa;}
+      @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+    </style></head><body>
     <div class="pdf-header">
       <div class="pdf-logo">LATTE LOUNGE<span>Restaurant & Café · Nouakchott</span></div>
-      <div class="pdf-meta">
-        Généré le : ${now}<br>
-        Route de Nouadhibou<br>
-        +222 27 17 61 91
-      </div>
+      <div class="pdf-meta">Généré le : ${now}<br>Route de Nouadhibou<br>+222 27 17 61 91</div>
     </div>
     <div class="pdf-title">${title}</div>
     ${body}
-    <div class="pdf-footer">
-      <span>Latte Lounge © ${new Date().getFullYear()}</span>
-      <span>Document confidentiel — usage interne</span>
-      <span>lattelounge-dashboard.pages.dev</span>
-    </div>
-  </body></html>`);
+    <div class="pdf-footer"><span>Latte Lounge © ${new Date().getFullYear()}</span><span>Document confidentiel — usage interne</span><span>lattelounge-dashboard.pages.dev</span></div>
+    </body></html>`);
   w.document.close();
   setTimeout(()=>{ w.focus(); w.print(); }, 800);
 }
 
-function closeRapport(){
-  document.getElementById('rapportModal').classList.remove('open');
-}
+function closeRapport(){ document.getElementById('rapportModal').classList.remove('open'); }
+document.getElementById('rapportModal').addEventListener('click',function(e){ if(e.target===this) closeRapport(); });
 
-// Fermer modal en cliquant dehors
-document.getElementById('rapportModal').addEventListener('click',function(e){
-  if(e.target===this) closeRapport();
-});
-
-// Démarrage + rafraîchissement auto toutes les 5 min
 loadAll();
 setInterval(loadAll, 5*60*1000);
 </script>
