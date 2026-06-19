@@ -3,433 +3,389 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Latte Lounge — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500;700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<title>Commandes Live – Latte Lounge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;900&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0D1117; --surface:#161B22; --surface2:#21262D;
-  --border:#30363D; --navy:#1B2A4A;
-  --gold:#C9A84C; --gold2:#F0D080;
-  --green:#3DAA6E; --green2:#2ecc71;
-  --blue:#3A7BD5; --blue2:#64B5F6;
-  --red:#E74C3C; --muted:#8B949E; --text:#E6EDF3;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Jost',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  :root {
+    --bg:      #F5F0E8;
+    --surface: #FFFFFF;
+    --card:    #EDE6D6;
+    --border:  rgba(184,148,42,.25);
+    --navy:    #1B2A4A;
+    --navy2:   #243558;
+    --gold:    #B8942A;
+    --gold2:   #D4AF5A;
+    --gold3:   #F0D080;
+    --red:     #C0392B;
+    --green:   #27AE60;
+    --orange:  #E07B39;
+    --blue:    #2980B9;
+    --purple:  #8B5CF6;
+    --text:    #1B2A4A;
+    --muted:   #8A7A6A;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-/* ── HEADER ── */
-header{background:linear-gradient(135deg,#0a0e13,#1a2535);border-bottom:1px solid var(--gold);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.logo-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--gold);letter-spacing:3px;text-transform:uppercase;}
-.logo-sub{font-size:10px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:2px;}
-.header-right{display:flex;align-items:center;gap:10px;}
-.badge-live{display:flex;align-items:center;gap:5px;background:rgba(61,170,110,.15);border:1px solid var(--green);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--green);font-weight:600;}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-.btn-sm{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:11px;padding:5px 12px;cursor:pointer;font-family:'Jost',sans-serif;transition:all .2s;}
-.btn-sm:hover{border-color:var(--gold);color:var(--gold);}
-.btn-gold{background:var(--gold);border:none;border-radius:8px;color:#0a0e13;font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer;font-family:'Jost',sans-serif;transition:all .2s;}
-.btn-gold:hover{filter:brightness(1.1);}
-#lastUpdate{font-size:10px;color:var(--muted);}
+  /* ── LOGIN (retiré) ── */
 
-/* ── CONTENT ── */
-.content{padding:20px 24px;max-width:1200px;margin:0 auto;}
-.section-label{font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;margin-top:8px;display:flex;align-items:center;gap:8px;font-weight:600;}
-.section-label .line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+  /* ── SOUND UNLOCK BANNER ── */
+  #soundBanner{background:linear-gradient(135deg,#FDF4E8,#FBEAD4);border-bottom:2px solid var(--orange);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .sound-unlock-btn{background:var(--orange);border:none;border-radius:10px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:10px 20px;cursor:pointer;transition:all .2s;}
+  .sound-unlock-btn:hover{filter:brightness(1.1);}
+  #soundBanner.hidden{display:none;}
 
-/* ── AUJOURD'HUI — HERO ── */
-.today-hero{background:linear-gradient(135deg,#1a2535,#0f1825);border:2px solid var(--gold);border-radius:20px;padding:24px;margin-bottom:32px;position:relative;overflow:hidden;}
-.today-hero::before{content:'⭐ AUJOURD''HUI';position:absolute;top:16px;right:20px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px;}
-.today-date{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;}
-.today-total-block{text-align:center;padding:16px 0 24px;}
-.today-total-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:3px;margin-bottom:8px;}
-.today-total{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--gold);line-height:1;}
-.today-total .unit{font-size:24px;font-weight:400;opacity:.7;}
-.today-cmds{font-size:14px;color:var(--text);margin-top:10px;}
-.today-cmds b{color:var(--gold2);}
-.today-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.split-card{background:rgba(0,0,0,.25);border-radius:14px;padding:18px;text-align:center;border:1px solid var(--border);}
-.split-card.bankily{border-color:rgba(61,170,110,.4);}
-.split-card.cash{border-color:rgba(58,123,213,.4);}
-.split-icon{font-size:24px;margin-bottom:6px;}
-.split-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
-.split-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:700;}
-.split-val.bankily{color:var(--green2);}
-.split-val.cash{color:var(--blue2);}
-.split-count{font-size:11px;color:var(--muted);margin-top:6px;}
+  /* ── HEADER ── */
+  header{background:linear-gradient(135deg,#0d1a30,#1B2A4A,#0d1a30);border-bottom:2px solid var(--gold);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:50;}
+  .hlogo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--gold3);letter-spacing:3px;}
+  .hsublogo{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:2px;}
+  .hright{display:flex;align-items:center;gap:8px;}
+  .badge-new{background:var(--red);color:#fff;font-family:'DM Mono',monospace;font-size:12px;font-weight:700;border-radius:20px;padding:4px 12px;animation:blink 1s infinite;display:none;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+  .hclock{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold3);}
+  .hbtn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:5px 12px;cursor:pointer;}
+  .hbtn:hover{border-color:var(--red);color:var(--red);}
 
-/* ── KPIs SEMAINE ── */
-.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.kpi.total::before{background:linear-gradient(90deg,var(--gold),var(--gold2));}
-.kpi.bankily::before{background:linear-gradient(90deg,var(--green),var(--green2));}
-.kpi.cash::before{background:linear-gradient(90deg,var(--blue),var(--blue2));}
-.kpi.cmds::before{background:linear-gradient(90deg,#9B59B6,#D7BDE2);}
-.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
-.kpi-val{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1;}
-.kpi-val.total{color:var(--gold);}
-.kpi-val.bankily{color:var(--green2);}
-.kpi-val.cash{color:var(--blue2);}
-.kpi-val.cmds{color:#D7BDE2;}
-.kpi-sub{font-size:11px;color:var(--muted);margin-top:6px;}
-.kpi-unit{font-size:13px;font-weight:400;opacity:.7;}
+  /* ── STATS ── */
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:14px 20px;}
+  .sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+  .sc-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:5px;}
+  .sc-v{font-family:'Playfair Display',serif;font-size:22px;}
 
-/* ── 7 DAYS CARDS ── */
-.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:32px;}
-.day-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;transition:transform .2s;}
-.day-card:hover{transform:translateY(-2px);border-color:var(--gold);}
-.day-card.today{border-color:var(--gold);background:linear-gradient(135deg,var(--surface),rgba(201,168,76,.06));}
-.day-header{text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.day-name{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
-.day-date{font-size:13px;color:var(--text);font-weight:600;margin-top:2px;}
-.day-total{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--gold);text-align:center;}
-.day-total-label{font-size:9px;color:var(--muted);text-align:center;text-transform:uppercase;letter-spacing:1px;margin-top:-4px;}
-.day-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;}
-.day-row-label{color:var(--muted);display:flex;align-items:center;gap:4px;}
-.day-row-val{font-family:'DM Mono',monospace;font-weight:600;}
-.day-row-val.bankily{color:var(--green2);}
-.day-row-val.cash{color:var(--blue2);}
-.day-row-val.cmds{color:#D7BDE2;}
-.day-bars{display:flex;gap:3px;align-items:flex-end;height:40px;margin-top:4px;}
-.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
-.bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s ease;}
-.bar.bankily{background:var(--green);}
-.bar.cash{background:var(--blue);}
-.bar-label{font-size:8px;color:var(--muted);text-transform:uppercase;}
-.day-empty{text-align:center;color:var(--muted);font-size:11px;padding:10px 0;}
+  /* ── FILTERS ── */
+  .filters{display:flex;gap:8px;padding:0 20px 14px;flex-wrap:wrap;}
+  .fbtn{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;}
+  .fbtn.active{background:var(--gold);border-color:var(--gold);color:#000;}
 
-/* ── RAPPORT BUTTONS ── */
-.rapport-section{display:flex;gap:12px;margin-bottom:28px;}
-.btn-rapport{flex:1;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Jost',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-rapport:hover{border-color:var(--gold);color:var(--gold);}
+  /* ── ORDERS GRID ── */
+  .ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding:0 20px 30px;}
+  .oempty{text-align:center;color:var(--muted);padding:60px 20px;grid-column:1/-1;font-size:14px;line-height:2;}
+  .oempty-icon{font-size:48px;margin-bottom:12px;}
 
-/* ── MODAL ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;}
-.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.modal-header h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);}
-.modal-body{padding:20px;}
-.rapport-table{width:100%;border-collapse:collapse;font-size:12px;}
-.rapport-table th{background:var(--surface2);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
-.rapport-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;}
-.rapport-table tr:hover td{background:rgba(201,168,76,.04);}
-.rapport-table .total-row td{font-weight:700;color:var(--gold);border-top:2px solid var(--gold);}
+  /* ── ORDER CARD ── */
+  .ocard{background:var(--surface);border-radius:16px;overflow:hidden;animation:pop .3s ease;}
+  @keyframes pop{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+  .ocard.envoye    {border:2px solid var(--red);   box-shadow:0 0 20px rgba(214,64,69,.2);}
+  .ocard.confirme  {border:2px solid var(--blue);}
+  .ocard.preparation{border:2px solid var(--orange);}
+  .ocard.livraison {border:2px solid var(--purple);}
+  .ocard.livre     {border:2px solid var(--green);opacity:.7;}
+  .ocard.annule    {border:2px solid var(--muted);opacity:.5;}
 
-.loading{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
+  /* Card header */
+  .ch{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+  .ch-left{}
+  .ch-code{font-family:'DM Mono',monospace;font-size:15px;color:var(--gold);font-weight:700;letter-spacing:2px;}
+  .ch-time{font-size:11px;color:var(--muted);margin-top:2px;}
+  .ch-badge{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;}
+  .ch-badge.envoye    {background:rgba(214,64,69,.15);color:var(--red);border:1px solid var(--red);}
+  .ch-badge.confirme  {background:rgba(58,123,213,.15);color:var(--blue);border:1px solid var(--blue);}
+  .ch-badge.preparation{background:rgba(224,123,57,.15);color:var(--orange);border:1px solid var(--orange);}
+  .ch-badge.livraison {background:rgba(139,92,246,.15);color:var(--purple);border:1px solid var(--purple);}
+  .ch-badge.livre     {background:rgba(61,170,110,.15);color:var(--green);border:1px solid var(--green);}
+  .ch-badge.annule    {background:rgba(136,136,136,.15);color:var(--muted);border:1px solid var(--muted);}
 
-@media(max-width:900px){
-  .kpi-strip{grid-template-columns:repeat(2,1fr);}
-  .days-grid{grid-template-columns:repeat(3,1fr);}
-  .today-total{font-size:42px;}
-}
-@media(max-width:560px){
-  .kpi-strip{grid-template-columns:1fr 1fr;}
-  .days-grid{grid-template-columns:1fr 1fr;}
-  header{padding:10px 14px;}
-  .content{padding:14px;}
-  .today-hero{padding:18px;}
-  .today-total{font-size:38px;}
-  .rapport-section{flex-direction:column;}
-}
+  /* Client info */
+  .cinfo{padding:10px 16px;border-bottom:1px solid var(--border);background:var(--card);}
+  .cinfo-name{font-size:13px;font-weight:600;}
+  .cinfo-phone{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);margin-top:2px;}
+  .cinfo-pay{font-size:11px;color:var(--gold);font-weight:600;margin-top:3px;}
+
+  /* Items */
+  .citems{padding:10px 16px;border-bottom:1px solid var(--border);}
+  .citem-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:3px 0;border-bottom:1px solid var(--border);}
+  .citem-row:last-child{border-bottom:none;}
+  .ctotal{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);}
+  .ctotal-left{font-size:12px;color:var(--muted);}
+  .ctotal-val{font-family:'DM Mono',monospace;font-size:16px;color:var(--gold);font-weight:700;}
+  .cnotes{padding:8px 16px;font-size:12px;color:var(--navy);background:rgba(184,148,42,.1);border-bottom:1px solid var(--border);}
+
+  /* ── STATUS BUTTONS — clearly visible ── */
+  .cstatus{padding:14px 16px;border-bottom:1px solid var(--border);}
+  .cstatus-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;font-weight:700;}
+  .cstatus-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .cstatus-grid button{padding:10px 6px;border-radius:10px;border:2px solid transparent;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
+  .cstatus-grid button:hover{transform:scale(1.03);}
+  .cstatus-grid button.current{border-color:var(--navy)!important;transform:scale(1.05);box-shadow:0 4px 12px rgba(27,42,74,.25);}
+  .btn-st-confirme   {background:var(--blue);   color:#fff;}
+  .btn-st-preparation{background:var(--orange);  color:#fff;}
+  .btn-st-attente    {background:#E07B39;         color:#fff;}
+  .btn-st-livraison  {background:var(--purple);  color:#fff;}
+  .btn-st-livre      {background:var(--green);   color:#fff;}
+
+  /* Actions */
+  .cactions{display:flex;gap:8px;padding:10px 16px;}
+  .ca-map{flex:1;padding:10px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
+  .ca-del{flex:1;padding:10px;background:transparent;border:2px solid var(--red);border-radius:10px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;}
+  .ca-del:hover{background:rgba(214,64,69,.1);}
+
+  /* Toast */
+  .toast{position:fixed;top:80px;right:20px;background:var(--red);color:#fff;border-radius:14px;padding:14px 22px;font-size:15px;font-weight:700;box-shadow:0 8px 32px rgba(214,64,69,.5);z-index:500;display:none;}
+  @keyframes tin{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
+<!-- SOUND UNLOCK BANNER -->
+<div id="soundBanner">
+  <div>
+    <div style="font-size:14px;font-weight:700;color:var(--orange)">🔔 Activez le son des alertes</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:2px">Cliquez une fois pour recevoir des alertes sonores à chaque nouvelle commande</div>
+  </div>
+  <button class="sound-unlock-btn" onclick="unlockSound()">🔔 Activer le son</button>
+</div>
+
+<!-- HEADER -->
 <header>
   <div>
-    <div class="logo-name">Latte Lounge</div>
-    <div class="logo-sub">Dashboard Financier</div>
+    <div class="hlogo">Latte Lounge</div>
+    <div class="hsublogo">Commandes · Temps réel 🔴</div>
   </div>
-  <div class="header-right">
-    <div class="badge-live"><span class="dot"></span>Live</div>
-    <span id="lastUpdate"></span>
-    <button class="btn-sm" onclick="loadAll()">↻ Actualiser</button>
+  <div class="hright">
+    <span class="badge-new" id="badgeNew">0 nouvelle(s)</span>
+    <div class="hclock" id="clock2">--:--:--</div>
   </div>
 </header>
 
-<div class="content">
-
-  <!-- AUJOURD'HUI EN PRIORITÉ -->
-  <div id="todayHero">
-    <div class="loading">⏳ Chargement des données du jour...</div>
-  </div>
-
-  <!-- KPIs SEMAINE -->
-  <div class="section-label">📊 Résumé de la semaine <span class="line"></span></div>
-  <div class="kpi-strip" id="kpiStrip">
-    <div class="loading">⏳ Chargement...</div>
-  </div>
-
-  <!-- 7 JOURS -->
-  <div class="section-label">📅 Les 7 derniers jours <span class="line"></span></div>
-  <div class="days-grid" id="daysGrid">
-    <div class="loading">⏳ Chargement...</div>
-  </div>
-
-  <!-- RAPPORTS -->
-  <div class="section-label">📈 Rapports produits <span class="line"></span></div>
-  <div class="rapport-section">
-    <button class="btn-rapport" onclick="openRapport('7j')">📊 Rapport produits — 7 derniers jours</button>
-    <button class="btn-rapport" onclick="openRapport('mois')">📅 Rapport produits — 30 derniers jours</button>
-  </div>
-
+<!-- STATS -->
+<div class="stats">
+  <div class="sc"><div class="sc-l">Nouvelles</div><div class="sc-v" style="color:var(--red)" id="sEnv">0</div></div>
+  <div class="sc"><div class="sc-l">Confirmées</div><div class="sc-v" style="color:var(--blue)" id="sCon">0</div></div>
+  <div class="sc"><div class="sc-l">Préparation</div><div class="sc-v" style="color:var(--orange)" id="sPre">0</div></div>
+  <div class="sc"><div class="sc-l">Livraison</div><div class="sc-v" style="color:var(--purple)" id="sLiv">0</div></div>
+  <div class="sc"><div class="sc-l">Total du jour</div><div class="sc-v" style="color:var(--gold)" id="sTot">0 MRU</div></div>
 </div>
 
-<!-- MODAL RAPPORT -->
-<div class="modal-overlay" id="rapportModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="rapportTitle">Rapport</h2>
-      <div style="display:flex;gap:8px;">
-        <button class="btn-gold" onclick="downloadPDF()">⬇️ PDF</button>
-        <button class="btn-sm" onclick="closeRapport()">✕ Fermer</button>
-      </div>
-    </div>
-    <div class="modal-body" id="rapportBody">
-      <div class="loading">⏳ Génération du rapport...</div>
-    </div>
-  </div>
+<!-- FILTERS -->
+<div class="filters">
+  <button class="fbtn active" onclick="setFilter('tous',this)">Toutes</button>
+  <button class="fbtn" onclick="setFilter('envoye',this)">🔴 Nouvelles</button>
+  <button class="fbtn" onclick="setFilter('confirme',this)">🔵 Confirmées</button>
+  <button class="fbtn" onclick="setFilter('preparation',this)">🟠 Préparation</button>
+  <button class="fbtn" onclick="setFilter('livraison',this)">🟣 Livraison</button>
+  <button class="fbtn" onclick="setFilter('livre',this)">✅ Livrées</button>
 </div>
 
-<script>
-firebase.initializeApp({
+<!-- ORDERS -->
+<div class="ogrid" id="ordersGrid">
+  <div class="oempty"><div class="oempty-icon">📭</div>En attente de commandes...<br><small>Les commandes apparaissent ici en temps réel</small></div>
+</div>
+
+<div class="toast" id="toast">🛎 Nouvelle commande !</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const FB = {
   apiKey:"AIzaSyBZnorgx0FgFzQk-ynMWLWAGblA1797wL8",
+  authDomain:"latte-lounge-caisse.firebaseapp.com",
   databaseURL:"https://latte-lounge-caisse-default-rtdb.europe-west1.firebasedatabase.app",
   projectId:"latte-lounge-caisse",
+  storageBucket:"latte-lounge-caisse.firebasestorage.app",
+  messagingSenderId:"864095614648",
   appId:"1:864095614648:web:4d827e02772b5b73fca64d"
-});
-const db = firebase.database();
+};
 
-// ── JOUR COMMERCIAL (remise à zéro à 5h du matin) ──
-function getBusinessDay(date){
-  const d = new Date(date||Date.now());
-  if(d.getHours() < 5) d.setDate(d.getDate() - 1);
-  return d.toISOString().slice(0,10);
-}
+let db, orders={}, currentFilter='tous', isFirstLoad=true;
+let audioCtx=null, soundUnlocked=false;
 
-function getDays(n){
-  const days=[];
-  // Base = jour commercial actuel (tient compte du décalage 5h)
-  const base = new Date();
-  if(base.getHours() < 5) base.setDate(base.getDate() - 1);
-  for(let i=n-1;i>=0;i--){
-    const d=new Date(base);
-    d.setDate(d.getDate()-i);
-    const iso=d.toISOString().slice(0,10);
-    const key=iso.replace(/-/g,'_');
-    const dayNames=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-    const monthNames=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-    const label=dayNames[d.getDay()];
-    const dateStr=d.getDate()+' '+monthNames[d.getMonth()];
-    const isToday=(iso===getBusinessDay());
-    days.push({iso,key,label,dateStr,isToday});
-  }
-  return days;
-}
+// ── DÉMARRAGE DIRECT (sans mot de passe) ──
+startFirebase();
 
-async function fetchDays(days){
-  const results={};
-  await Promise.all(days.map(async d=>{
-    try{
-      const snap=await db.ref('caisse_historique/'+d.key).get();
-      const val = snap.exists() ? snap.val() : null;
-      results[d.key] = Array.isArray(val) ? val.filter(o=>o) : [];
-    }catch(e){ results[d.key]=[]; }
-  }));
-  return results;
-}
+// ── CLOCK ──
+setInterval(()=>document.getElementById('clock2').textContent=new Date().toLocaleTimeString('fr-FR'),1000);
+document.getElementById('clock2').textContent=new Date().toLocaleTimeString('fr-FR');
 
-function calcDay(orders){
-  let total=0,bankily=0,cash=0,bCount=0,cCount=0;
-  (orders||[]).forEach(o=>{
-    total += o.total||0;
-    if(o.payMode==='bankily'){ bankily+=o.total||0; bCount++; }
-    else if(o.payMode==='cash'){ cash+=o.total||0; cCount++; }
-  });
-  return {total,bankily,cash,cmds:(orders||[]).length,bCount,cCount};
-}
+// ── SOUND ──
+window.unlockSound=function(){
+  try{
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    // Play silent sound to unlock
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.connect(g);g.connect(audioCtx.destination);
+    g.gain.setValueAtTime(0,audioCtx.currentTime);
+    o.start();o.stop(audioCtx.currentTime+0.001);
+    soundUnlocked=true;
+    document.getElementById('soundBanner').classList.add('hidden');
+    // Play test sound
+    setTimeout(()=>playAlert(),200);
+  }catch(e){console.log('Sound error:',e);}
+};
 
-// ── HERO AUJOURD'HUI ──
-function renderToday(today, data){
-  const s = calcDay(data[today.key]);
-  const dateFull = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  document.getElementById('todayHero').innerHTML=`
-    <div class="today-hero">
-      <div class="today-date">${dateFull}</div>
-      <div class="today-total-block">
-        <div class="today-total-label">💰 Total encaissé aujourd'hui</div>
-        <div class="today-total">${s.total.toLocaleString('fr-FR')} <span class="unit">MRU</span></div>
-        <div class="today-cmds"><b>${s.cmds}</b> commande${s.cmds>1?'s':''} aujourd'hui</div>
-      </div>
-      <div class="today-split">
-        <div class="split-card bankily">
-          <div class="split-icon">📱</div>
-          <div class="split-label">Bankily</div>
-          <div class="split-val bankily">${s.bankily.toLocaleString('fr-FR')} MRU</div>
-          <div class="split-count">${s.bCount} transaction${s.bCount>1?'s':''}</div>
-        </div>
-        <div class="split-card cash">
-          <div class="split-icon">💵</div>
-          <div class="split-label">Cash</div>
-          <div class="split-val cash">${s.cash.toLocaleString('fr-FR')} MRU</div>
-          <div class="split-count">${s.cCount} transaction${s.cCount>1?'s':''}</div>
-        </div>
-      </div>
-    </div>`;
-}
-
-// ── KPIs SEMAINE ──
-function renderKPIs(days, data){
-  let total=0,bankily=0,cash=0,cmds=0,bCount=0,cCount=0;
-  days.forEach(d=>{
-    const s=calcDay(data[d.key]);
-    total+=s.total; bankily+=s.bankily; cash+=s.cash; cmds+=s.cmds; bCount+=s.bCount; cCount+=s.cCount;
-  });
-  document.getElementById('kpiStrip').innerHTML=`
-    <div class="kpi total">
-      <div class="kpi-label">💰 Total 7 jours</div>
-      <div class="kpi-val total">${total.toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
-      <div class="kpi-sub">${cmds} commandes</div>
-    </div>
-    <div class="kpi bankily">
-      <div class="kpi-label">📱 Bankily 7 jours</div>
-      <div class="kpi-val bankily">${bankily.toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
-      <div class="kpi-sub">${bCount} transactions</div>
-    </div>
-    <div class="kpi cash">
-      <div class="kpi-label">💵 Cash 7 jours</div>
-      <div class="kpi-val cash">${cash.toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
-      <div class="kpi-sub">${cCount} transactions</div>
-    </div>
-    <div class="kpi cmds">
-      <div class="kpi-label">🧾 Moyenne / jour</div>
-      <div class="kpi-val cmds">${Math.round(total/7).toLocaleString('fr-FR')} <span class="kpi-unit">MRU</span></div>
-      <div class="kpi-sub">${(cmds/7).toFixed(1)} cmd/jour</div>
-    </div>`;
-}
-
-// ── 7 JOURS ──
-function renderDays(days, data){
-  const maxTotal=Math.max(...days.map(d=>calcDay(data[d.key]).total),1);
-  let html='';
-  days.forEach(d=>{
-    const s=calcDay(data[d.key]);
-    const bankilyH=s.total>0?Math.round((s.bankily/maxTotal)*36):0;
-    const cashH=s.total>0?Math.round((s.cash/maxTotal)*36):0;
-    html+=`<div class="day-card${d.isToday?' today':''}">
-      <div class="day-header">
-        <div class="day-name">${d.isToday?'⭐ '+d.label:d.label}</div>
-        <div class="day-date">${d.dateStr}</div>
-      </div>`;
-    if(!s.total){
-      html+=`<div class="day-empty">Aucune<br>commande</div>`;
-    } else {
-      html+=`
-      <div class="day-total">${s.total.toLocaleString('fr-FR')}</div>
-      <div class="day-total-label">MRU</div>
-      <div class="day-row"><span class="day-row-label">📱 Bankily</span><span class="day-row-val bankily">${s.bankily.toLocaleString('fr-FR')}</span></div>
-      <div class="day-row"><span class="day-row-label">💵 Cash</span><span class="day-row-val cash">${s.cash.toLocaleString('fr-FR')}</span></div>
-      <div class="day-row"><span class="day-row-label">🧾 Cmds</span><span class="day-row-val cmds">${s.cmds}</span></div>
-      <div class="day-bars">
-        <div class="bar-wrap"><div class="bar bankily" style="height:${bankilyH}px"></div><div class="bar-label">B</div></div>
-        <div class="bar-wrap"><div class="bar cash" style="height:${cashH}px"></div><div class="bar-label">C</div></div>
-      </div>`;
-    }
-    html+=`</div>`;
-  });
-  document.getElementById('daysGrid').innerHTML=html;
-}
-
-// ── LOAD ALL ──
-async function loadAll(){
-  document.getElementById('lastUpdate').textContent='⏳';
-  const days=getDays(7);
-  const today=days[days.length-1]; // dernier = aujourd'hui
-  const data=await fetchDays(days);
-  renderToday(today,data);
-  renderKPIs(days,data);
-  renderDays(days,data);
-  document.getElementById('lastUpdate').textContent='Màj '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-}
-
-// ── RAPPORTS ──
-async function openRapport(type){
-  document.getElementById('rapportModal').classList.add('open');
-  const n = type==='mois'?30:7;
-  const label = type==='mois'?'30 derniers jours':'7 derniers jours';
-  document.getElementById('rapportTitle').textContent=`📊 Rapport produits — ${label}`;
-  document.getElementById('rapportBody').innerHTML='<div class="loading">⏳ Génération...</div>';
-  const days=getDays(n);
-  const data=await fetchDays(days);
-  const products={};
-  days.forEach(d=>{
-    (data[d.key]||[]).forEach(order=>{
-      (order.items||[]).forEach(it=>{
-        if(!products[it.name]) products[it.name]={qty:0,ca:0};
-        products[it.name].qty+=it.qty;
-        products[it.name].ca+=it.subtotal;
-      });
+function playAlert(){
+  if(!soundUnlocked||!audioCtx)return;
+  try{
+    [[523,.0],[659,.18],[784,.36],[1047,.54]].forEach(([freq,t])=>{
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.connect(g);g.connect(audioCtx.destination);
+      o.frequency.value=freq;o.type='sine';
+      g.gain.setValueAtTime(0,audioCtx.currentTime+t);
+      g.gain.linearRampToValueAtTime(0.4,audioCtx.currentTime+t+0.06);
+      g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+t+0.22);
+      o.start(audioCtx.currentTime+t);
+      o.stop(audioCtx.currentTime+t+0.28);
     });
+  }catch(e){}
+}
+
+// ── FIREBASE ──
+function startFirebase(){
+  const app=initializeApp(FB);
+  db=getDatabase(app);
+  const ordersRef=ref(db,'commandes');
+  onChildAdded(ordersRef,snap=>{
+    orders[snap.key]={...snap.val(),_key:snap.key};
+    if(!isFirstLoad){playAlert();showToast();}
+    renderOrders();updateStats();
   });
-  const sorted=Object.entries(products).sort((a,b)=>b[1].ca-a[1].ca);
-  const totalCA=sorted.reduce((s,[,v])=>s+v.ca,0);
-  const medals=['🥇','🥈','🥉'];
-  if(!sorted.length){
-    document.getElementById('rapportBody').innerHTML='<div class="loading">Aucune donnée sur cette période</div>';
+  onChildChanged(ordersRef,snap=>{
+    orders[snap.key]={...snap.val(),_key:snap.key};
+    renderOrders();updateStats();
+  });
+  onChildRemoved(ordersRef,snap=>{
+    delete orders[snap.key];
+    renderOrders();updateStats();
+  });
+  setTimeout(()=>isFirstLoad=false,2500);
+}
+
+function showToast(){
+  const t=document.getElementById('toast');
+  t.style.display='block';t.style.animation='tin .4s cubic-bezier(.34,1.56,.64,1)';
+  setTimeout(()=>t.style.display='none',4000);
+}
+
+// ── FILTER ──
+window.setFilter=function(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderOrders();
+};
+
+// ── STATS ──
+function updateStats(){
+  const all=Object.values(orders);
+  document.getElementById('sEnv').textContent=all.filter(o=>o.status==='envoye').length;
+  document.getElementById('sCon').textContent=all.filter(o=>o.status==='confirme').length;
+  document.getElementById('sPre').textContent=all.filter(o=>o.status==='preparation').length;
+  document.getElementById('sLiv').textContent=all.filter(o=>o.status==='attente_retrait'||o.status==='en_livraison').length;
+  document.getElementById('sTot').textContent=all.reduce((s,o)=>s+(o.total||0),0).toLocaleString('fr-FR')+' MRU';
+  const n=all.filter(o=>o.status==='envoye').length;
+  const badge=document.getElementById('badgeNew');
+  badge.style.display=n>0?'block':'none';
+  badge.textContent=n+' nouvelle(s)';
+}
+
+// ── STATUS LABELS ──
+const STATUS_LABELS={
+  envoye:'📤 Nouvelle',confirme:'✅ Confirmée',
+  preparation:'🍳 Préparation',attente_retrait:'🟠 Attente retrait',
+  en_livraison:'🛵 En livraison',livre:'🎉 Livrée',annule:'❌ Annulée'
+};
+
+// ── RENDER ──
+function renderOrders(){
+  const grid=document.getElementById('ordersGrid');
+  let list=Object.values(orders).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  if(currentFilter!=='tous') list=list.filter(o=>o.status===currentFilter);
+  if(!list.length){
+    grid.innerHTML=`<div class="oempty"><div class="oempty-icon">📭</div>${currentFilter==='tous'?'En attente de commandes...<br><small>Les commandes apparaissent ici en temps réel</small>':'Aucune commande dans cette catégorie'}</div>`;
     return;
   }
-  let html=`<table class="rapport-table"><thead><tr><th>#</th><th>Article</th><th>Qté</th><th>Chiffre d'affaires</th><th>%</th></tr></thead><tbody>`;
-  sorted.forEach(([name,{qty,ca}],i)=>{
-    const pct=totalCA>0?Math.round((ca/totalCA)*100):0;
-    html+=`<tr><td>${medals[i]||i+1}</td><td>${name}</td><td>${qty}</td><td>${ca.toLocaleString('fr-FR')} MRU</td><td>${pct}%</td></tr>`;
+  grid.innerHTML='';
+  list.forEach(order=>{
+    const key=order._key;
+    const st=order.status||'envoye';
+    const stLabel=STATUS_LABELS[st]||st;
+    const itemsHtml=(order.items||[]).map(it=>`<div class="citem-row"><span>${it.name} × ${it.qty}</span><span>${it.subtotal} MRU</span></div>`).join('');
+    const mapBtn=order.localisation?`<button class="ca-map" onclick="window.open('${order.localisation.mapsLink}','_blank')">📍 Maps (${order.localisation.distance} km)</button>`:'';
+
+    const statusActions=[
+      {key:'confirme',        label:'✅ Confirmer',          cls:'btn-st-confirme'},
+      {key:'preparation',     label:'🍳 En préparation',     cls:'btn-st-preparation'},
+      {key:'en_livraison',    label:'🛵 En livraison',       cls:'btn-st-livraison'},
+      {key:'livre',           label:'🎉 Livrée',             cls:'btn-st-livre'},
+    ];
+
+    const statusBtnsHtml=statusActions.map(s=>`
+      <button class="${s.cls}${st===s.key?' current':''}"
+        onclick="setStatus('${key}','${s.key}')"
+        style="padding:10px 6px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;border:2px solid ${st===s.key?'#fff':'transparent'};">
+        ${s.label}
+      </button>`).join('');
+
+    const card=document.createElement('div');
+    card.className=`ocard ${st}`;
+    card.id='card-'+key;
+    card.innerHTML=`
+      <div class="ch">
+        <div class="ch-left">
+          <div class="ch-code">#${order.trackingCode||'—'}</div>
+          <div class="ch-time">${order.date||''} · ${order.time||''}</div>
+        </div>
+        <span class="ch-badge ${st}">${stLabel}</span>
+      </div>
+      <div class="cinfo">
+        <div class="cinfo-name">👤 ${order.clientName||'—'}</div>
+        <div class="cinfo-phone">📞 ${order.clientPhone||'—'}</div>
+        <div class="cinfo-pay">💳 ${order.paiement||''}</div>
+      </div>
+      <div class="citems">${itemsHtml}</div>
+      <div class="ctotal">
+        <div class="ctotal-left">${order.fraisLivraison?'🛵 Livraison: '+order.fraisLivraison+' MRU':''}</div>
+        <div class="ctotal-val">TOTAL: ${order.total} MRU</div>
+      </div>
+      ${order.notes?`<div class="cnotes">📝 ${order.notes}</div>`:''}
+      <div class="cstatus">
+        <div class="cstatus-title">📋 Changer le statut de la commande</div>
+        <div class="cstatus-grid">${statusBtnsHtml}</div>
+      </div>
+      <div class="cactions">
+        ${mapBtn}
+        <button class="ca-del" onclick="cancelOrder('${key}')">❌ Annuler la commande</button>
+      </div>
+    `;
+    grid.appendChild(card);
   });
-  html+=`</tbody><tfoot><tr class="total-row"><td colspan="2">TOTAL</td><td>${sorted.reduce((s,[,v])=>s+v.qty,0)}</td><td>${totalCA.toLocaleString('fr-FR')} MRU</td><td>100%</td></tr></tfoot></table>`;
-  document.getElementById('rapportBody').innerHTML=html;
 }
 
-function downloadPDF(){
-  const title=document.getElementById('rapportTitle').textContent;
-  const body=document.getElementById('rapportBody').innerHTML;
-  const now=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
-  const w=window.open('','_blank');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
-    <style>
-      @page{size:A4;margin:15mm;}
-      *{box-sizing:border-box;margin:0;padding:0;}
-      body{font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:#1a1a1a;background:#fff;}
-      .pdf-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #C9A84C;padding-bottom:14px;margin-bottom:20px;}
-      .pdf-logo{font-size:22px;font-weight:900;color:#1B2A4A;letter-spacing:3px;text-transform:uppercase;}
-      .pdf-logo span{display:block;font-size:10px;font-weight:400;color:#888;letter-spacing:2px;margin-top:3px;}
-      .pdf-meta{text-align:right;font-size:10px;color:#888;line-height:1.8;}
-      .pdf-title{font-size:16px;font-weight:700;color:#1B2A4A;margin-bottom:16px;padding:10px 14px;background:#F5F0E8;border-left:4px solid #C9A84C;border-radius:4px;}
-      table{width:100%;border-collapse:collapse;margin-top:8px;}
-      thead th{background:#1B2A4A;color:#F0D080;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;padding:9px 12px;text-align:left;}
-      tbody td{padding:8px 12px;border-bottom:1px solid #E8E4DC;font-size:12px;}
-      tbody tr:nth-child(even) td{background:#FAFAF7;}
-      tfoot td{padding:10px 12px;font-weight:700;color:#1B2A4A;background:#F5F0E8;border-top:2px solid #C9A84C;font-size:13px;}
-      .pdf-footer{margin-top:24px;padding-top:12px;border-top:1px solid #E8E4DC;display:flex;justify-content:space-between;font-size:9px;color:#aaa;}
-      @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
-    </style></head><body>
-    <div class="pdf-header">
-      <div class="pdf-logo">LATTE LOUNGE<span>Restaurant & Café · Nouakchott</span></div>
-      <div class="pdf-meta">Généré le : ${now}<br>Route de Nouadhibou<br>+222 27 17 61 91</div>
-    </div>
-    <div class="pdf-title">${title}</div>
-    ${body}
-    <div class="pdf-footer"><span>Latte Lounge © ${new Date().getFullYear()}</span><span>Document confidentiel — usage interne</span><span>lattelounge-dashboard.pages.dev</span></div>
-    </body></html>`);
-  w.document.close();
-  setTimeout(()=>{ w.focus(); w.print(); }, 800);
-}
+// ── ACTIONS ──
+window.setStatus=async function(key,status){
+  try{
+    await update(ref(db,`commandes/${key}`),{status});
+    if(orders[key]) orders[key].status=status;
+    renderOrders(); updateStats();
+    // Supprimer après 30s si livrée
+    if(status==='livre'){
+      setTimeout(async()=>{
+        try{
+          await remove(ref(db,`commandes/${key}`));
+          delete orders[key];
+          renderOrders(); updateStats();
+        }catch(e){}
+      }, 30000);
+    }
+  }catch(e){alert('Erreur: '+e.message);}
+};
 
-function closeRapport(){ document.getElementById('rapportModal').classList.remove('open'); }
-document.getElementById('rapportModal').addEventListener('click',function(e){ if(e.target===this) closeRapport(); });
-
-loadAll();
-setInterval(loadAll, 5*60*1000);
+window.cancelOrder=async function(key){
+  if(!confirm('Annuler cette commande ? Le client sera informé.'))return;
+  try{
+    await update(ref(db,`commandes/${key}`),{status:'annule'});
+    if(orders[key]) orders[key].status='annule';
+    renderOrders(); updateStats();
+    // Supprimer après 30s
+    setTimeout(async()=>{
+      try{
+        await remove(ref(db,`commandes/${key}`));
+        delete orders[key];
+        renderOrders(); updateStats();
+      }catch(e){}
+    }, 30000);
+  }catch(e){alert('Erreur: '+e.message);}
+};
 </script>
 </body>
 </html>
