@@ -236,7 +236,13 @@ async function fetchDays(days){
     try{
       const snap=await db.ref('caisse_historique/'+d.key).get();
       const val = snap.exists() ? snap.val() : null;
-      results[d.key] = Array.isArray(val) ? val.filter(o=>o) : [];
+      let orders = [];
+      if(Array.isArray(val)){
+        orders = val.filter(o=>o);                 // ancien format tableau
+      } else if(val && typeof val==='object'){
+        orders = Object.values(val).filter(o=>o);  // nouveau format push (enfants)
+      }
+      results[d.key] = orders;
     }catch(e){ results[d.key]=[]; }
   }));
   return results;
