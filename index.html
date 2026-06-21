@@ -203,27 +203,28 @@ firebase.initializeApp({
 });
 const db = firebase.database();
 
-// ── JOUR COMMERCIAL (remise à zéro à 5h du matin) ──
+// ── JOUR COMMERCIAL (remise à zéro à 5h du matin, GMT = Mauritanie UTC+0) ──
+// Cohérent quel que soit le fuseau horaire de l'appareil qui consulte.
 function getBusinessDay(date){
   const d = new Date(date||Date.now());
-  if(d.getHours() < 5) d.setDate(d.getDate() - 1);
+  if(d.getUTCHours() < 5) d.setUTCDate(d.getUTCDate() - 1);
   return d.toISOString().slice(0,10);
 }
 
 function getDays(n){
   const days=[];
-  // Base = jour commercial actuel (tient compte du décalage 5h)
+  // Base = jour commercial actuel (remise à zéro à 5h UTC)
   const base = new Date();
-  if(base.getHours() < 5) base.setDate(base.getDate() - 1);
+  if(base.getUTCHours() < 5) base.setUTCDate(base.getUTCDate() - 1);
   for(let i=n-1;i>=0;i--){
     const d=new Date(base);
-    d.setDate(d.getDate()-i);
+    d.setUTCDate(d.getUTCDate()-i);
     const iso=d.toISOString().slice(0,10);
     const key=iso.replace(/-/g,'_');
     const dayNames=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
     const monthNames=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-    const label=dayNames[d.getDay()];
-    const dateStr=d.getDate()+' '+monthNames[d.getMonth()];
+    const label=dayNames[d.getUTCDay()];
+    const dateStr=d.getUTCDate()+' '+monthNames[d.getUTCMonth()];
     const isToday=(iso===getBusinessDay());
     days.push({iso,key,label,dateStr,isToday});
   }
@@ -261,7 +262,8 @@ function calcDay(orders){
 // ── HERO AUJOURD'HUI ──
 function renderToday(today, data){
   const s = calcDay(data[today.key]);
-  const dateFull = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  // Date = jour commercial (cohérent avec la remise à zéro à 5h)
+  const dateFull = new Date(today.iso+'T12:00:00Z').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
   document.getElementById('todayHero').innerHTML=`
     <div class="today-hero">
       <div class="today-date">${dateFull}</div>
